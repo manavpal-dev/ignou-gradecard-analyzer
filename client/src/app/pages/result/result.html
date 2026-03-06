@@ -35,12 +35,12 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let subject of data().grades">
+          <tr [ngClass]="subject.Status === 'COMPLETED' ? 'completed' : 'pending'" *ngFor="let subject of data().grades">
             <td>{{ subject.Course }}</td>
             <td>{{ subject.Assignment ?? '-' }}</td>
             <td>{{ subject.Theory ?? '-' }}</td>
             <td>{{ subject.Practical ?? '-' }}</td>
-            <td [ngClass]="subject.Status === 'COMPLETED' ? 'completed' : 'pending' " class="status">{{ subject.Status }}</td>
+            <td>{{ subject.Status }}</td>
           </tr>
         </tbody>
       </table>

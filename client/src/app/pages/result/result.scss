@@ -72,29 +72,31 @@
     transition: background 0.2s;
   }
 
-  tbody tr:hover {
-    background: #f5f7fa;
-  }
-
   td {
     color: #444;
   }
 
   .status {
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 13px;
-}
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+  }
 
-.completed {
-  background: #eafaf1;
-  color: #27ae60;
-}
+  .completed {
+    background: #eafaf1;
+    color: #27ae60;
+    &:hover {
+      background: #d4f5e3;
+    }
+  }
 
-.pending {
-  background: #fdecea;
-  color: #e74c3c;
-}
+  .pending {
+    background: #fdecea;
+    color: #e74c3c;
+    &:hover {
+      background: #f8d7da;
+    }
+  }
 }
 
 @media (max-width: 768px) {

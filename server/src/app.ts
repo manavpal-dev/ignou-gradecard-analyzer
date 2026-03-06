@@ -9,7 +9,7 @@ const app = express();
 app.use(cors()); // it helps to connect or make communication between the frontend and backend
 app.use(express.json());
 
-app.use("/api", healthRouter);
+app.use("/", healthRouter);
 app.use("/api",browserRouter);
 
 export default app;

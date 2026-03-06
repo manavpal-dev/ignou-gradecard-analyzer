@@ -1,28 +1,35 @@
-import puppeteer from "puppeteer";
+import { getBrowser } from "./browserManager";
 
 export const browserService = async (program: string, enrollment: string) => {
-  const browser = await puppeteer.launch({
-    headless: true,
-    defaultViewport: null,
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-    ],
-  });
+  const browser = getBrowser();
 
   const page = await browser.newPage();
 
-  await page.setUserAgent(
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
-  );
-  /* ---------- DEBUG ---------- */
-  // page.on("requestfailed", (r) => console.log("FAILED:", r.url()));
-  // page.on("console", (msg) => console.log("BROWSER:", msg.text()));
+  await page.setUserAgent({
+    userAgent:
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+  });
 
   /* ---------- HEADLESS BYPASS ---------- */
   await page.evaluateOnNewDocument(() => {
     Object.defineProperty(navigator, "webdriver", { get: () => false });
+  });
+
+  //blocking unnecessary request
+  await page.setRequestInterception(true);
+
+  page.on("request", (request) => {
+    const resourceType = request.resourceType();
+
+    if (
+      resourceType === "image" ||
+      resourceType === "font" ||
+      resourceType === "media"
+    ) {
+      request.abort();
+    } else {
+      request.continue();
+    }
   });
 
   try {
@@ -142,11 +149,11 @@ export const browserService = async (program: string, enrollment: string) => {
     /* ---------- CALC ---------- */
 
     let total = 0;
-    for (const g of result.grades) {
+    for (const grade of result.grades) {
       total +=
-        (g.Theory ?? 0) * 0.7 +
-        (g.Assignment ?? 0) * 0.3 +
-        (g.Practical ?? 0) * 0.7;
+        (grade.Theory ?? 0) * 0.7 +
+        (grade.Assignment ?? 0) * 0.3 +
+        (grade.Practical ?? 0) * 0.7;
     }
 
     const percentage = total / result.grades.length;
@@ -160,13 +167,16 @@ export const browserService = async (program: string, enrollment: string) => {
     };
   } catch (err) {
     console.log("ERROR:", err);
-    await page.screenshot({ path: "fatal.png", fullPage: true });
+    await page.screenshot({
+      path: `error-${Date.now()}.png`,
+      fullPage: true,
+    });
 
     return {
       success: false,
       message: "Scraping failed",
     };
   } finally {
-    await browser.close();
+    await page.close();
   }
 };
