@@ -1,0 +1,53 @@
+<div class="result-container">
+
+<ng-container *ngIf="!data(); else loaded">
+  <h3 class="loading">Loading Grade Card...</h3>
+</ng-container>
+
+<ng-template #loaded>
+
+  <div *ngIf="error(); else resultBlock" class="error">
+    <p>{{ error() }}</p>
+  </div>
+
+  <ng-template #resultBlock>
+    <div *ngIf="data()" class="result-card">
+
+      <div class="student-info">
+        <h2>{{ data()?.student?.name }}</h2>
+        <p><strong>Enrollment:</strong> {{ data()?.student?.enrollment }}</p>
+        <p><strong>Program:</strong> {{ data()?.student?.program }}</p>
+        <p class="percentage">
+          Percentage: {{ data()?.percentage | number:'1.2-2' }}%
+        </p>
+        <p><strong>Total Subject: </strong>{{ data()?.total_subjects}} / 39</p>
+      </div>
+
+      <table class="grade-table">
+        <thead>
+          <tr>
+            <th>Course</th>
+            <th>Assignment</th>
+            <th>Theory</th>
+            <th>Practical</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let subject of data().grades">
+            <td>{{ subject.Course }}</td>
+            <td>{{ subject.Assignment ?? '-' }}</td>
+            <td>{{ subject.Theory ?? '-' }}</td>
+            <td>{{ subject.Practical ?? '-' }}</td>
+            <td [ngClass]="subject.Status === 'COMPLETED' ? 'completed' : 'pending' " class="status">{{ subject.Status }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </ng-template>
+
+</ng-template>
+
+</div>

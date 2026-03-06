@@ -1,0 +1,41 @@
+<div class="search-container">
+
+  <div class="search-card">
+    <h2 class="title">IGNOU Grade Card Checker</h2>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="search-form">
+
+      <!-- Program -->
+      <div class="form-group">
+        <label for="program">Program</label>
+        <select id="program" formControlName="program">
+          <option value="">Select Program</option>
+          <option value="BCA">BCA</option>
+          <option value="MCA">MCA</option>
+        </select>
+      </div>
+
+      <!-- Enrollment -->
+      <div class="form-group">
+        <label for="enrollment">Enrollment Number</label>
+        <input
+          id="enrollment"
+          type="text"
+          placeholder="Enter enrollment number"
+          formControlName="enrollment"
+        />
+      </div>
+
+      <!-- Button -->
+      <button
+        type="submit"
+        class="search-btn"
+        [disabled]="form.invalid"
+      >
+        Search Grade Card
+      </button>
+
+    </form>
+  </div>
+
+</div>

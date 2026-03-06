@@ -1,0 +1,108 @@
+.result-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+.loading {
+  font-size: 20px;
+  color: #555;
+}
+
+.error {
+  color: #c0392b;
+  font-size: 18px;
+  text-align: center;
+}
+
+.result-card {
+  width: 100%;
+  max-width: 900px;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.student-info {
+  margin-bottom: 25px;
+
+  h2 {
+    margin-bottom: 10px;
+    font-size: 26px;
+    color: #2c3e50;
+  }
+
+  p {
+    margin: 4px 0;
+    color: #555;
+    font-size: 15px;
+  }
+
+  .percentage {
+    margin-top: 8px;
+    font-weight: 600;
+    color: #27ae60;
+  }
+}
+
+.grade-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  thead {
+    background: #2c3e50;
+    color: #fff;
+  }
+
+  th,
+  td {
+    padding: 10px 12px;
+    text-align: center;
+  }
+
+  th {
+    font-weight: 600;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+  }
+
+  tbody tr:hover {
+    background: #f5f7fa;
+  }
+
+  td {
+    color: #444;
+  }
+
+  .status {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.completed {
+  background: #eafaf1;
+  color: #27ae60;
+}
+
+.pending {
+  background: #fdecea;
+  color: #e74c3c;
+}
+}
+
+@media (max-width: 768px) {
+  .result-card {
+    padding: 20px;
+  }
+
+  .grade-table {
+    font-size: 12px;
+  }
+}
