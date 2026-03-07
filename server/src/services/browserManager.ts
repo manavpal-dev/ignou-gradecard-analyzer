@@ -11,12 +11,8 @@ export const initBrowser = async () => {
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
         "--single-process", // Helps with memory on Render free tier
-        "--no-zygote"       // Prevents ghost processes
+        "--no-zygote", // Prevents ghost processes
       ],
-      // This tells Puppeteer where to find the Chrome you installed in the Build Command
-      executablePath: process.env.NODE_ENV === "production" 
-        ? process.env.PUPPETEER_EXECUTABLE_PATH 
-        : undefined,
     });
 
     console.log("Browser initialized successfully");
