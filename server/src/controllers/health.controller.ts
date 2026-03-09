@@ -4,7 +4,7 @@ import { Request,Response } from "express";
 
 export const health = (req:Request,res:Response) =>{
     try{
-        res.send("Backend is working fine");
+        res.send("Health is fine");
     }
     catch(error){
         res.status(500).send("Something went wrong")
