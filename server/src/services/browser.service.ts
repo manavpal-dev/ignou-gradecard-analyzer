@@ -4,6 +4,7 @@ export const browserService = async (program: string, enrollment: string) => {
   const browser = getBrowser();
 
   const page = await browser.newPage();
+  await page.setCacheEnabled(false);
 
   await page.setUserAgent({
     userAgent:
@@ -35,10 +36,10 @@ export const browserService = async (program: string, enrollment: string) => {
   try {
     await page.goto("https://gradecard.ignou.ac.in/gradecard/login.aspx", {
       waitUntil: "domcontentloaded",
-      timeout: 60000,
+      // timeout: 60000,
     });
 
-    await page.reload({ waitUntil: "domcontentloaded" });
+    // await page.reload({ waitUntil: "domcontentloaded" });
 
     const title = await page.title();
 
