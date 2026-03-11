@@ -11,7 +11,7 @@ $text-secondary: #94a3b8;
 
   border-top: 1px solid $app-footer-border;
 
-  padding: 22px 20px;
+  padding: 15px 18px;
 
   font-size: 14px;
 }
@@ -40,14 +40,15 @@ $text-secondary: #94a3b8;
   color: $text-primary;
 
   font-weight: 500;
+  font-size: larger;
 }
 
 /* Secondary text */
 
 .footer-container span {
-  color: $text-secondary;
+  color: $text-primary;
 
-  font-size: 13px;
+  font-size: large;
 }
 
 /* subtle divider line */
@@ -73,5 +74,6 @@ $text-secondary: #94a3b8;
     text-align: center;
 
     gap: 6px;
+    font-size: small;
   }
 }

@@ -36,6 +36,14 @@ export class Result {
       this.total_subject = 39;
     }
 
+    if (program === 'BCA_NEW') {
+      this.total_subject = 32;
+    }
+
+     if (program === 'MCA_NEW' || program === "MCA") {
+      this.total_subject = 22;
+    }
+
     console.log('API TRIGGERED');
 
     this.fetchData(program, enrollment);
