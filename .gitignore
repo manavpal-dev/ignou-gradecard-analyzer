@@ -28,7 +28,6 @@ coverage/
 tmp/
 
 # screenshots (optional)
-*.png
 *.jpg
 
 .cache
