@@ -15,6 +15,7 @@ export class Result {
   loading = signal(true);
   error = signal<string | null>(null);
   data = signal<any>(null);
+  total_subject: number | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,6 +30,10 @@ export class Result {
       this.error.set('Invalid parameters');
       this.loading.set(false);
       return;
+    }
+
+    if (program === 'BCA') {
+      this.total_subject = 39;
     }
 
     console.log('API TRIGGERED');
