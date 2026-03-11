@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Gradecard } from '../../services/gradecard';
 import { NgIf, NgFor, DecimalPipe, NgClass } from '@angular/common';
-import { ChangeDetectorRef } from '@angular/core';
 import { signal } from '@angular/core';
 
 @Component({
@@ -20,7 +19,6 @@ export class Result {
   constructor(
     private route: ActivatedRoute,
     private gradecardService: Gradecard,
-    // private cd: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -54,7 +52,6 @@ export class Result {
         });
 
         this.loading.set(false);
-        // this.cd.detectChanges();
       },
       error: (err) => {
         console.log('API ERROR:', err);

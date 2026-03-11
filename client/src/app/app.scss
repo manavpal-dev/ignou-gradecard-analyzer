@@ -1,10 +1,21 @@
-.app-header {
-  background: #2c3e50;
-  color: white;
-  padding: 16px;
-  text-align: center;
+$primary-color: #2c3e50;
+$background-color: #f4f6f8;
+$text-light: #ffffff;
+$max-width: 1100px;
+
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.app-content {
-  padding: 40px;
+.app-main {
+  flex: 1;
+  background: $background-color;
+
+  .content-container {
+    max-width: $max-width;
+    margin: 0 auto;
+    padding: 32px 20px;
+  }
 }

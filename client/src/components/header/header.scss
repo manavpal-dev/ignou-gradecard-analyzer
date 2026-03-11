@@ -1,0 +1,24 @@
+$primary-color: #2c3e50;
+$background-color: #f4f6f8;
+$text-light: #ffffff;
+$max-width: 1100px;
+
+.app-header {
+  background: $primary-color;
+  color: $text-light;
+  padding: 22px 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .header-container {
+    max-width: $max-width;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .logo {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+}

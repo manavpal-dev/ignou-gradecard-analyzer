@@ -14,22 +14,33 @@ import { Router } from '@angular/router';
 export class Form {
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private router:Router) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+  ) {
     this.form = this.fb.group({
       program: ['', Validators.required],
-      enrollment: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
+      enrollment: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(10),
+          Validators.maxLength(10),
+          Validators.pattern('^[0-9]+$'),
+        ],
+      ],
     });
   }
 
-  onSubmit(){
-    if(this.form.invalid) return;
+  onSubmit() {
+    if (this.form.invalid) return;
 
-    const {program, enrollment} = this.form.value;
+    const { program, enrollment } = this.form.value;
 
     console.log(this.form.value);
 
-    this.router.navigate(['/result'],{
-      queryParams: {program,enrollment}
+    this.router.navigate(['/result'], {
+      queryParams: { program, enrollment },
     });
   }
 }

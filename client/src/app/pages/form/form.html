@@ -1,10 +1,9 @@
 <div class="search-container">
-
   <div class="search-card">
     <h2 class="title">IGNOU Grade Card Checker</h2>
+    <p class="subtitle">Check your academic performance instantly</p>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="search-form">
-
       <!-- Program -->
       <div class="form-group">
         <label for="program">Program</label>
@@ -21,21 +20,13 @@
         <input
           id="enrollment"
           type="text"
-          placeholder="Enter enrollment number"
+          placeholder="Enter 10 digit enrollment number"
           formControlName="enrollment"
         />
       </div>
 
       <!-- Button -->
-      <button
-        type="submit"
-        class="search-btn"
-        [disabled]="form.invalid"
-      >
-        Search Grade Card
-      </button>
-
+      <button type="submit" class="search-btn" [disabled]="form.invalid">Search Grade Card</button>
     </form>
   </div>
-
 </div>
