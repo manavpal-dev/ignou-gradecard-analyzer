@@ -6,10 +6,10 @@ export const browserService = async (program: string, enrollment: string) => {
   const page = await browser.newPage();
   await page.setCacheEnabled(false);
 
-  await page.setUserAgent({
-    userAgent:
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
-  });
+  await page.setExtraHTTPHeaders({
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+});
 
   /* ---------- HEADLESS BYPASS ---------- */
   await page.evaluateOnNewDocument(() => {
