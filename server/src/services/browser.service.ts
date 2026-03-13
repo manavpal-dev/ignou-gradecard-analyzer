@@ -184,7 +184,7 @@ export const browserService = async (program: string, enrollment: string) => {
   } catch (err) {
     console.log("ERROR:", err);
     await page.screenshot({
-      path: `error-${Date.now()}.png`,
+      path: `error-${Date.now()}.jpg`,
       fullPage: true,
     });
 
