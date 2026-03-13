@@ -7,9 +7,9 @@ export const browserService = async (program: string, enrollment: string) => {
   await page.setCacheEnabled(false);
 
   await page.setExtraHTTPHeaders({
-  "User-Agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
-});
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+  });
 
   /* ---------- HEADLESS BYPASS ---------- */
   await page.evaluateOnNewDocument(() => {
@@ -25,7 +25,8 @@ export const browserService = async (program: string, enrollment: string) => {
     if (
       resourceType === "image" ||
       resourceType === "font" ||
-      resourceType === "media"
+      resourceType === "media" ||
+      resourceType === "stylesheet"
     ) {
       request.abort();
     } else {
@@ -36,7 +37,6 @@ export const browserService = async (program: string, enrollment: string) => {
   try {
     await page.goto("https://gradecard.ignou.ac.in/gradecard/login.aspx", {
       waitUntil: "domcontentloaded",
-      // timeout: 60000,
     });
 
     // await page.reload({ waitUntil: "domcontentloaded" });
@@ -81,6 +81,17 @@ export const browserService = async (program: string, enrollment: string) => {
       input.dispatchEvent(new Event("blur", { bubbles: true }));
     }, enrollment);
 
+    /* ---------- HANDLE ALERT ---------- */
+
+    let dialogMessage: string | null = null;
+
+    page.once("dialog", async (dialog) => {
+      dialogMessage = dialog.message();
+      console.log("IGNOU ALERT:", dialogMessage);
+
+      await dialog.accept(); // click OK
+    });
+
     /* ---------- STEP 4: SUBMIT FORM SAFELY ---------- */
 
     await page.waitForFunction(() => {
@@ -88,15 +99,19 @@ export const browserService = async (program: string, enrollment: string) => {
       return btn && !btn.hasAttribute("disabled");
     });
 
-    await page.evaluate(() => {
-      const btn = document.querySelector("#btnlogin") as HTMLElement | null;
-      btn?.click();
-    });
+    await page.click("#btnlogin")
 
     /* ---------- STEP 5: WAIT FOR RESULT ---------- */
 
+    if (dialogMessage) {
+      return {
+        success: false,
+        message: dialogMessage,
+      };
+    }
+
     await page.waitForSelector("#ctl00_ContentPlaceHolder1_gvDetail", {
-      timeout: 60000,
+      timeout: 15000,
     });
 
     /* ---------- STEP 6: EXTRACT ---------- */
