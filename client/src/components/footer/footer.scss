@@ -6,74 +6,56 @@ $text-secondary: #94a3b8;
 
 .app-footer {
   margin-top: auto;
-
   background: $app-footer-bg;
-
   border-top: 1px solid $app-footer-border;
 
-  padding: 15px 18px;
-
-  font-size: 14px;
+  padding: 10px 16px;   // reduced padding
+  font-size: 13px;      // smaller base font
 }
-
-/* Container */
 
 .footer-container {
   max-width: 1200px;
-
   margin: 0 auto;
 
   display: flex;
-
-  justify-content: space-between;
-
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
 
-  gap: 10px;
+  text-align: center;
+  gap: 4px;  // smaller gap
 }
 
-/* Primary text */
+/* primary line */
 
 .footer-container p {
   margin: 0;
-
-  color: $text-primary;
-
-  font-weight: 500;
-  font-size: larger;
+  color: $text-secondary;
+  font-weight: 400;
+  font-size: 13px;
 }
 
-/* Secondary text */
+/* copyright */
 
 .footer-container span {
   color: $text-primary;
-
-  font-size: large;
+  font-size: 13px;
 }
 
-/* subtle divider line */
+/* subtle divider */
 
 .app-footer::before {
   content: '';
-
   display: block;
-
   height: 1px;
-
-  background: rgba(255, 255, 255, 0.04);
-
-  margin-bottom: 14px;
+  background: rgba(255,255,255,0.04);
+  margin-bottom: 8px;   // reduced spacing
 }
 
 /* mobile */
 
 @media (max-width: 640px) {
   .footer-container {
-    flex-direction: column;
-
-    text-align: center;
-
-    gap: 6px;
-    font-size: small;
+    font-size: 12px;
   }
 }
