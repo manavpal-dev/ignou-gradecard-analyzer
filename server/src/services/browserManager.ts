@@ -5,7 +5,7 @@ let browser: Browser;
 export const initBrowser = async () => {
   try {
     browser = await puppeteer.launch({
-      headless: false, // Use "new" if on a very recent puppeteer version
+      headless: true, // Use "new" if on a very recent puppeteer version
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
