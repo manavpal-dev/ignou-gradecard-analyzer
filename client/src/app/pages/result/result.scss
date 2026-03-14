@@ -1,5 +1,9 @@
-$result-bg: #f1f5f9;
-$primary: #4f46e5;
+/* COLORS */
+
+$primary: #6366f1;
+$primary-light: #818cf8;
+
+$bg: linear-gradient(135deg, #eef2ff, #f8fafc);
 
 $text-dark: #0f172a;
 $text-light: #64748b;
@@ -15,11 +19,13 @@ $danger-bg: #fee2e2;
 /* PAGE */
 
 .result-container {
-  min-height: 90vh;
+  min-height: 100vh;
   padding: 40px 20px;
   display: flex;
   justify-content: center;
-  background: $result-bg;
+  align-items: flex-start;
+  background: $bg;
+  font-family: 'Inter', sans-serif;
 }
 
 /* CARD */
@@ -28,26 +34,36 @@ $danger-bg: #fee2e2;
   width: 100%;
   max-width: 1100px;
 
-  background: white;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
 
-  border-radius: 16px;
+  border-radius: 18px;
 
-  padding: 32px;
+  padding: 36px;
 
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.05);
+
+  transition: transform 0.25s ease;
 }
 
-/* STUDENT HEADER */
+.result-card:hover {
+  transform: translateY(-3px);
+}
+
+/* HEADER */
 
 .student-header {
-  margin-bottom: 30px;
+  margin-bottom: 28px;
 }
 
 .student-main {
   margin-bottom: 20px;
 
   h2 {
-    font-size: 26px;
+    font-size: 28px;
+    font-weight: 700;
     color: $text-dark;
     margin-bottom: 6px;
   }
@@ -62,70 +78,126 @@ $danger-bg: #fee2e2;
 
 .stats {
   display: grid;
-
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 
   gap: 16px;
 }
 
 .stat {
-  background: #f8fafc;
+  background: white;
 
-  padding: 16px;
+  border-radius: 12px;
 
-  border-radius: 10px;
+  padding: 18px;
+
+  border: 1px solid $border;
 
   display: flex;
   flex-direction: column;
 
-  .label {
-    font-size: 12px;
-    color: $text-light;
-  }
-
-  .value {
-    font-size: 16px;
-    font-weight: 600;
-    color: $text-dark;
-  }
+  transition: all 0.25s ease;
 }
 
+.stat:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+}
+
+.label {
+  font-size: 12px;
+  color: $text-light;
+  margin-bottom: 4px;
+}
+
+.value {
+  font-size: 18px;
+  font-weight: 700;
+  color: $text-dark;
+}
+
+/* HIGHLIGHT */
+
 .highlight {
-  background: #eef2ff;
+  background: linear-gradient(135deg, #eef2ff, #f5f3ff);
 
   .value {
     color: $primary;
   }
 }
 
+/* PROGRESS */
+
+.progress-container {
+  margin-top: 8px;
+
+  height: 8px;
+
+  background: #e5e7eb;
+
+  border-radius: 10px;
+
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+
+  background: linear-gradient(90deg, $primary, $primary-light);
+
+  border-radius: 10px;
+
+  transition: width 0.6s ease;
+}
+
 /* TABLE */
 
 .table-wrapper {
   overflow-x: auto;
+
+  margin-top: 18px;
 }
 
 .grade-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 600px;
+
+  min-width: 650px;
 }
 
+/* TABLE HEADER */
+
 .grade-table th {
-  text-align: left;
+  position: sticky;
+  top: 0;
+
+  background: white;
 
   padding: 14px;
 
   font-size: 13px;
 
+  text-align: left;
+
   color: $text-light;
 
-  border-bottom: 1px solid $border;
+  border-bottom: 2px solid $border;
 }
+
+/* TABLE BODY */
 
 .grade-table td {
   padding: 14px;
 
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid $border;
+
+  font-size: 14px;
+}
+
+/* ROW HOVER */
+
+.grade-table tbody tr {
+  transition: background 0.2s;
 }
 
 .grade-table tbody tr:hover {
@@ -136,13 +208,14 @@ $danger-bg: #fee2e2;
 
 .course {
   font-weight: 600;
+
   color: $text-dark;
 }
 
 /* STATUS */
 
 .status-badge {
-  padding: 5px 10px;
+  padding: 6px 12px;
 
   border-radius: 999px;
 
@@ -153,11 +226,13 @@ $danger-bg: #fee2e2;
 
 .completed {
   background: $success-bg;
+
   color: $success;
 }
 
 .pending {
   background: $danger-bg;
+
   color: $danger;
 }
 
@@ -165,12 +240,17 @@ $danger-bg: #fee2e2;
 
 .loading {
   text-align: center;
+
   color: $text-light;
+
+  margin-top: 120px;
 }
 
+/* SPINNER */
+
 .spinner {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
 
   border: 4px solid #e2e8f0;
 
@@ -193,11 +273,12 @@ $danger-bg: #fee2e2;
 
 .error {
   background: $danger-bg;
+
   color: $danger;
 
   padding: 16px;
 
-  border-radius: 8px;
+  border-radius: 10px;
 
   font-weight: 500;
 }
@@ -206,7 +287,7 @@ $danger-bg: #fee2e2;
 
 @media (max-width: 768px) {
   .result-card {
-    padding: 20px;
+    padding: 24px;
   }
 
   .student-main h2 {

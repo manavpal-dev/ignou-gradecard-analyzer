@@ -13,7 +13,7 @@
 
     <ng-template #resultBlock>
       <div class="result-card">
-        <!-- Student Header -->
+        <!-- HEADER -->
         <div class="student-header">
           <div class="student-main">
             <h2>{{ data()?.student?.name }}</h2>
@@ -26,9 +26,17 @@
               <span class="value">{{ data()?.student?.enrollment }}</span>
             </div>
 
-            <div class="stat">
-              <span class="label">Subjects</span>
-              <span class="value">{{ data()?.total_subjects }} / {{total_subject}}</span>
+            <div class="stat progress-stat">
+              <span class="label">Course Completion</span>
+
+              <span class="value"> {{ data()?.total_subjects }} / {{ total_subject }} </span>
+
+              <div class="progress-container">
+                <div
+                  class="progress-bar"
+                  [style.width.%]="((data()?.total_subjects || 0) / (total_subject || 1)) * 100"
+                ></div>
+              </div>
             </div>
 
             <div class="stat highlight">
@@ -38,7 +46,7 @@
           </div>
         </div>
 
-        <!-- Table -->
+        <!-- TABLE -->
         <div class="table-wrapper">
           <table class="grade-table">
             <thead>
@@ -53,7 +61,9 @@
 
             <tbody>
               <tr *ngFor="let subject of data().grades">
-                <td class="course">{{ subject.Course }}</td>
+                <td class="course">
+                  {{ subject.Course }}
+                </td>
 
                 <td>{{ subject.Assignment ?? '-' }}</td>
 

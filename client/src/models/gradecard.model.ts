@@ -18,4 +18,5 @@ export interface GradeCardResponse {
   grades: Grade[];
   percentage: number;
   total_subject: number;
+  wrong_input:string
 }

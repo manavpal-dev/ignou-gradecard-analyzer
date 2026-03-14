@@ -1,36 +1,22 @@
 import puppeteer, { Browser } from "puppeteer";
 
 let browser: Browser;
-
 export const initBrowser = async () => {
+  const isProd = process.env.NODE_ENV === "production";
   try {
     browser = await puppeteer.launch({
-      headless: true, // Use "new" if on a very recent puppeteer version
+      headless: isProd ? true : false, // Use modern shell locally
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
-        "--single-process", // Helps with memory on Render free tier
-        "--no-zygote", // Prevents ghost processes
-        "--disable-gpu",
+        "--window-size=1920,1080",
       ],
+      defaultViewport: { width: 1920, height: 1080 },
     });
-
-    console.log("Browser initialized successfully");
-
-    // 🔥 PRE-WARM CHROMIUM
-    const page = await browser.newPage();
-
-    await page.goto("https://gradecard.ignou.ac.in/gradecard/login.aspx", {
-      waitUntil: "domcontentloaded",
-    });
-
-    await page.close();
-
-    console.log("Browser warmed up successfully");
+    console.log("Browser initialized");
   } catch (error) {
-    console.error("Failed to initialize browser:", error);
-    throw error;
+    console.error("Init Error:", error);
   }
 };
 

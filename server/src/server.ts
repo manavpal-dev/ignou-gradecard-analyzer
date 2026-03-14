@@ -6,14 +6,14 @@ const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
   try {
-    await initBrowser(); // start puppeteer once
-    app.listen(PORT, () => {
-      console.log(`Server is running on port http://localhost:${PORT}`);
-    });
+    await initBrowser();
   } catch (error) {
-    console.error("Failed to start server:",error);
-    process.exit(1);
+    console.error("Browser initialization failed, continuing without prewarm:", error);
   }
+
+  app.listen(PORT, () => {
+    console.log(`Server is running on port http://localhost:${PORT}`);
+  });
 };
 
 startServer();

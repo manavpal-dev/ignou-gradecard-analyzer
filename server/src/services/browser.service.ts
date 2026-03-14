@@ -25,8 +25,8 @@ export const browserService = async (program: string, enrollment: string) => {
     if (
       resourceType === "image" ||
       resourceType === "font" ||
-      resourceType === "media" ||
-      resourceType === "stylesheet"
+      resourceType === "media"
+      // resourceType === "stylesheet"
     ) {
       request.abort();
     } else {
@@ -36,7 +36,7 @@ export const browserService = async (program: string, enrollment: string) => {
 
   try {
     await page.goto("https://gradecard.ignou.ac.in/gradecard/login.aspx", {
-      waitUntil: "domcontentloaded",
+      waitUntil: "networkidle2", // Wait until network is quiet
     });
 
     // await page.reload({ waitUntil: "domcontentloaded" });
@@ -82,26 +82,48 @@ export const browserService = async (program: string, enrollment: string) => {
     }, enrollment);
 
     /* ---------- HANDLE ALERT ---------- */
-
     let dialogMessage: string | null = null;
-
-    page.once("dialog", async (dialog) => {
+    page.on("dialog", async (dialog) => {
       dialogMessage = dialog.message();
-      console.log("IGNOU ALERT:", dialogMessage);
-
-      await dialog.accept(); // click OK
+      console.log("IGNOU Alert:", dialogMessage);
+      await dialog.accept();
     });
 
-    /* ---------- STEP 4: SUBMIT FORM SAFELY ---------- */
+    /* ---------- STEP 4: SUBMIT FORM ---------- */
+    await page.waitForSelector("#btnlogin", { visible: true });
 
-    await page.waitForFunction(() => {
-      const btn = document.querySelector("#btnlogin");
-      return btn && !btn.hasAttribute("disabled");
-    });
+    // We click the button and then race to see what happens first:
+    // a result table or a dialog message.
+    await page.click("#btnlogin");
 
-    await page.click("#btnlogin")
+    try {
+      await Promise.race([
+        // Success case: the table appears
+        page.waitForSelector("#ctl00_ContentPlaceHolder1_gvDetail", {
+          timeout: 15000,
+        }),
 
-    /* ---------- STEP 5: WAIT FOR RESULT ---------- */
+        // Failure case: we wait for dialogMessage to be set by the listener
+        new Promise((_, reject) => {
+          const checkInterval = setInterval(() => {
+            if (dialogMessage) {
+              clearInterval(checkInterval);
+              reject(new Error(dialogMessage));
+            }
+          }, 100);
+          // Kill the interval if nothing happens in 10s
+          setTimeout(() => clearInterval(checkInterval), 10000);
+        }),
+      ]);
+    } catch (err: any) {
+      return {
+        success: false,
+        message: dialogMessage || "Timed out waiting for grade card results.",
+      };
+    }
+
+    /* ---------- STEP 5: EXTRACT ---------- */
+    // If we reach here, Step 4 passed and the table exists.
 
     if (dialogMessage) {
       return {
@@ -180,6 +202,7 @@ export const browserService = async (program: string, enrollment: string) => {
       data: result,
       percentage,
       length: result.grades.length,
+      dialogMessage
     };
   } catch (err) {
     console.log("ERROR:", err);

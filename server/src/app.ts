@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import healthRouter from "./routes/health.routes";
 import browserRouter from "./routes/browser.routes";
-import { Request,Response } from "express";
 const app = express();
 
 //Middleware
@@ -13,3 +12,4 @@ app.use("/api", healthRouter);
 app.use("/api",browserRouter);
 
 export default app;
+
