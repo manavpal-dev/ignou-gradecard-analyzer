@@ -6,12 +6,15 @@ export const initBrowser = async () => {
   try {
     browser = await puppeteer.launch({
       headless: isProd ? true : false, // Use modern shell locally
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--window-size=1920,1080",
-      ],
+
+args: [
+  "--no-sandbox",
+  "--disable-setuid-sandbox",
+  "--single-process",        // Crucial for Render
+  "--disable-dev-shm-usage", // Prevents crashes in Docker/Linux
+  "--no-zygote",             // Saves RAM
+  "--disable-gpu",           // Saves CPU
+],
       defaultViewport: { width: 1920, height: 1080 },
     });
     console.log("Browser initialized");
