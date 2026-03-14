@@ -26,7 +26,7 @@ export const browserService = async (program: string, enrollment: string) => {
       resourceType === "image" ||
       resourceType === "font" ||
       resourceType === "media"
-      // resourceType === "stylesheet"
+      resourceType === "stylesheet"
     ) {
       request.abort();
     } else {
