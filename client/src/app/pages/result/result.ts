@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Gradecard } from '../../services/gradecard';
-import { NgIf, NgFor, DecimalPipe, NgClass } from '@angular/common';
+import { NgIf, NgFor, DecimalPipe, NgClass,Location } from '@angular/common';
 
 @Component({
   selector: 'app-result',
@@ -20,6 +20,7 @@ export class Result implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private gradecardService: Gradecard,
+    private location:Location
   ) {
     // Check if data was passed via Router State (from Form component)
     const navigation = this.router.getCurrentNavigation();
@@ -28,6 +29,10 @@ export class Result implements OnInit {
     if (stateData) {
       this.processResponse(stateData);
     }
+  }
+
+  goBack(){
+    this.location.back();
   }
 
   ngOnInit() {
@@ -78,8 +83,21 @@ export class Result implements OnInit {
     this.data.set({
       student: response.student,
       grades: [...response.grades],
-      percentage: response.percentage,
-      total_subjects: response.total_subject,
+
+      subjectStatus: {
+        percentage: response.subjectDetails.percentage,
+        total_subjects: response.subjectDetails.total_subject,
+
+        subjectComplete: response.subjectDetails.statusComplete,
+        subjectIncomplete: response.subjectDetails.statusIncomplete,
+      },
+
+      totalMarks: {
+        theoryMarks: response.raw_total.totalTheoryMarks,
+        assignmentMarks: response.raw_total.totalAssignmentMarks,
+        practicalMarks: response.raw_total.totalPracticalMarks,
+      },      
     });
   }
+  
 }

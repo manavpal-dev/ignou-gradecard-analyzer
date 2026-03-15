@@ -12,6 +12,7 @@
     </div>
 
     <ng-template #resultBlock>
+      <div class="back-link" (click)="goBack()">← Back to Search</div>
       <div class="result-card">
         <!-- HEADER -->
         <div class="student-header">
@@ -29,19 +30,41 @@
             <div class="stat progress-stat">
               <span class="label">Subjects</span>
 
-              <span class="value"> {{ data()?.total_subjects }} / {{ total_subject }} </span>
+              <span class="value">
+                {{ data()?.subjectStatus.total_subjects }} / {{ total_subject }}
+              </span>
 
               <div class="progress-container">
                 <div
                   class="progress-bar"
-                  [style.width.%]="((data()?.total_subjects || 0) / (total_subject || 1)) * 100"
+                  [style.width.%]="
+                    ((data()?.subjectStatus.total_subjects || 0) / (total_subject || 1)) * 100
+                  "
                 ></div>
+              </div>
+            </div>
+
+            <div class="stat progress-stat">
+              <span class="label">Subjects Status</span>
+
+              <div class="status-row">
+                <div class="status-item complete">
+                  <span class="count">{{ data()?.subjectStatus.subjectComplete }}</span>
+                  <span class="status-label">Completed</span>
+                </div>
+
+                <div class="status-divider"></div>
+
+                <div class="status-item incomplete">
+                  <span class="count">{{ data()?.subjectStatus.subjectIncomplete }}</span>
+                  <span class="status-label">Incomplete</span>
+                </div>
               </div>
             </div>
 
             <div class="stat highlight">
               <span class="label">Percentage</span>
-              <span class="value"> {{ data()?.percentage | number: '1.2-2' }}% </span>
+              <span class="value"> {{ data()?.subjectStatus.percentage | number: '1.2-2' }}% </span>
             </div>
           </div>
         </div>
@@ -79,6 +102,13 @@
                     {{ subject.Status }}
                   </span>
                 </td>
+              </tr>
+              <tr class="total_marks">
+                <td>Total Marks</td>
+                <td>{{ data()?.totalMarks.assignmentMarks }}</td>
+                <td>{{ data()?.totalMarks.theoryMarks }}</td>
+                <td>{{ data()?.totalMarks.practicalMarks }}</td>
+                <td></td>
               </tr>
             </tbody>
           </table>

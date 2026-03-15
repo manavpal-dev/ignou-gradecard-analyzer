@@ -197,13 +197,20 @@ export const browserService = async (program: string, enrollment: string) => {
     let sum_assignment = 0;
     let sum_theory = 0;
     let sum_practical = 0;
-    let status = 0;
+    let statusComplete = 0;
+    let statusIncomplete = 0;
 
     for (const grade of result.grades) {
       // Calculate individual weighted components for this specific subject
       const weightedAssignment = (grade.Assignment ?? 0) * 0.3;
       const weightedTheory = (grade.Theory ?? 0) * 0.7;
       const weightedPractical = (grade.Practical ?? 0) * 0.7;
+
+      if (grade.Status === "COMPLETED") {
+        statusComplete += 1;
+      } else {
+        statusIncomplete += 1;
+      }
 
       // Add to individual category sums
       sum_assignment += grade.Assignment ?? 0;
@@ -221,10 +228,12 @@ export const browserService = async (program: string, enrollment: string) => {
       data: result,
       dialogMessage,
 
-      percentage: Number(percentage.toFixed(2)), // Clean decimal
-
-      length: result.grades.length,
-
+      subjectsDetails: {
+        percentage: Number(percentage.toFixed(2)), // Clean decimal
+        length: result.grades.length,
+        statusComplete,
+        statusIncomplete
+      },
       raw_sums: {
         total_assignment_marks: Number(sum_assignment.toFixed(2)),
         total_theory_marks: Number(sum_theory.toFixed(2)),

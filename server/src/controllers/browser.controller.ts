@@ -20,9 +20,12 @@ export const browserController = async (req: Request, res: Response) => {
         grades: result.data?.grades,
         wrong_input: result.dialogMessage || null,
 
-        percentage: result.percentage,
-        total_subject: result.length,
-
+        subjectDetails: {
+          percentage: result.subjectsDetails?.percentage,
+          total_subject: result.subjectsDetails?.length,
+          statusComplete: result.subjectsDetails?.statusComplete,
+          statusIncomplete: result.subjectsDetails?.statusIncomplete,
+        },
         raw_total: {
           totalTheoryMarks: result.raw_sums?.total_theory_marks,
           totalAssignmentMarks: result.raw_sums?.total_assignment_marks,
