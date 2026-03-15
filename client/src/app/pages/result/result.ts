@@ -40,7 +40,7 @@ export class Result implements OnInit {
         this.error.set('Missing program or enrollment number');
         return;
       }
-      
+
       this.setTotalSubjects(program);
       this.fetchData(program, enrollment);
     }
@@ -50,7 +50,7 @@ export class Result implements OnInit {
     const p = program.toUpperCase();
     if (p === 'BCA') this.total_subject = 39;
     else if (p === 'BCA_NEW') this.total_subject = 32;
-    else if (p === 'MCA_NEW' || p === "MCA") this.total_subject = 22;
+    else if (p === 'MCA_NEW' || p === 'MCA') this.total_subject = 22;
   }
 
   private fetchData(program: string, enrollment: string) {
@@ -72,7 +72,7 @@ export class Result implements OnInit {
   private processResponse(response: any) {
     // Map total subjects if not already set
     if (!this.total_subject && response.student?.program) {
-       this.setTotalSubjects(response.student.program);
+      this.setTotalSubjects(response.student.program);
     }
 
     this.data.set({

@@ -29,7 +29,7 @@ export class Form {
         '',
         [
           Validators.required,
-          Validators.minLength(9),
+          Validators.minLength(10),
           Validators.maxLength(10),
           Validators.pattern('^[0-9]+$'),
         ],

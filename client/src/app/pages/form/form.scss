@@ -14,13 +14,13 @@ $background: #f8fafc;
   justify-content: center;
   align-items: center;
 
-  min-height: 90vh;
+  // min-height: 90vh;
 
-  padding: 20px;
+  padding-top: 3.5rem;
 
-  background:
-    radial-gradient(circle at top, #e0e7ff, transparent 60%),
-    linear-gradient(135deg, #f8fafc, #eef2ff);
+  // background:
+  //   radial-gradient(circle at top, #e0e7ff, transparent 60%),
+  //   linear-gradient(135deg, #f8fafc, #eef2ff);
 }
 
 /* CARD */
@@ -255,7 +255,7 @@ $background: #f8fafc;
 
 @media (max-width: 480px) {
   .search-card {
-    padding: 30px 22px;
+    padding: 50px 22px;
   }
 
   .title {
