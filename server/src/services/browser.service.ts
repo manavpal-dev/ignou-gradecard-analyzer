@@ -2,8 +2,16 @@ import { getBrowser } from "./browserManager";
 
 export const browserService = async (program: string, enrollment: string) => {
   const browser = getBrowser();
-
   const page = await browser.newPage();
+
+  /* ---------- HANDLE ALERT ---------- */
+  let dialogMessage: string | null = null;
+  page.on("dialog", async (dialog) => {
+    dialogMessage = dialog.message();
+    console.log("IGNOU Alert:", dialogMessage);
+    await dialog.accept();
+  });
+
   await page.setCacheEnabled(false);
 
   await page.setExtraHTTPHeaders({
@@ -36,7 +44,7 @@ export const browserService = async (program: string, enrollment: string) => {
 
   try {
     await page.goto("https://gradecard.ignou.ac.in/gradecard/login.aspx", {
-      waitUntil: "networkidle2", // Wait until network is quiet
+      waitUntil: "domcontentloaded", // networkidle2 --> Wait until network is quiet
     });
 
     // await page.reload({ waitUntil: "domcontentloaded" });
@@ -81,14 +89,6 @@ export const browserService = async (program: string, enrollment: string) => {
       input.dispatchEvent(new Event("blur", { bubbles: true }));
     }, enrollment);
 
-    /* ---------- HANDLE ALERT ---------- */
-    let dialogMessage: string | null = null;
-    page.on("dialog", async (dialog) => {
-      dialogMessage = dialog.message();
-      console.log("IGNOU Alert:", dialogMessage);
-      await dialog.accept();
-    });
-
     /* ---------- STEP 4: SUBMIT FORM ---------- */
     await page.waitForSelector("#btnlogin", { visible: true });
 
@@ -100,10 +100,10 @@ export const browserService = async (program: string, enrollment: string) => {
       await Promise.race([
         // Success case: the table appears
         page.waitForSelector("#ctl00_ContentPlaceHolder1_gvDetail", {
-          timeout: 15000,
+          timeout: 22000,
         }),
 
-        // Failure case: we wait for dialogMessage to be set by the listener
+        // Failure case: browser alert detected
         new Promise((_, reject) => {
           const checkInterval = setInterval(() => {
             if (dialogMessage) {
@@ -111,14 +111,21 @@ export const browserService = async (program: string, enrollment: string) => {
               reject(new Error(dialogMessage));
             }
           }, 100);
-          // Kill the interval if nothing happens in 10s
-          setTimeout(() => clearInterval(checkInterval), 10000);
+
+          // Match the timeout of the selector for consistency
+          setTimeout(() => clearInterval(checkInterval), 22000);
         }),
       ]);
     } catch (err: any) {
+      // If it's a timeout, give a clear "server busy" message
+      const errorMessage =
+        err.name === "TimeoutError"
+          ? "IGNOU server is slow. Please try again."
+          : dialogMessage || "An error occurred during scraping.";
+
       return {
         success: false,
-        message: dialogMessage || "Timed out waiting for grade card results.",
+        message: errorMessage,
       };
     }
 
@@ -186,23 +193,43 @@ export const browserService = async (program: string, enrollment: string) => {
 
     /* ---------- CALC ---------- */
 
-    let total = 0;
-    for (const grade of result.grades) {
-      total +=
-        (grade.Theory ?? 0) * 0.7 +
-        (grade.Assignment ?? 0) * 0.3 +
-        (grade.Practical ?? 0) * 0.7;
-    }
+    let totalMarks = 0;
+    let sum_assignment = 0;
+    let sum_theory = 0;
+    let sum_practical = 0;
+    let status = 0;
 
-    const percentage = total / result.grades.length;
+    for (const grade of result.grades) {
+      // Calculate individual weighted components for this specific subject
+      const weightedAssignment = (grade.Assignment ?? 0) * 0.3;
+      const weightedTheory = (grade.Theory ?? 0) * 0.7;
+      const weightedPractical = (grade.Practical ?? 0) * 0.7;
+
+      // Add to individual category sums
+      sum_assignment += grade.Assignment ?? 0;
+      sum_theory += grade.Theory ?? 0;
+      sum_practical += grade.Practical ?? 0;
+
+      // Total subject marks calculate
+      totalMarks += weightedAssignment + weightedTheory + weightedPractical;
+    }
+    const percentage = totalMarks / result.grades.length;
 
     return {
       success: true,
       title,
       data: result,
-      percentage,
+      dialogMessage,
+
+      percentage: Number(percentage.toFixed(2)), // Clean decimal
+
       length: result.grades.length,
-      dialogMessage
+
+      raw_sums: {
+        total_assignment_marks: Number(sum_assignment.toFixed(2)),
+        total_theory_marks: Number(sum_theory.toFixed(2)),
+        total_practical_marks: Number(sum_practical.toFixed(2)),
+      },
     };
   } catch (err) {
     console.log("ERROR:", err);

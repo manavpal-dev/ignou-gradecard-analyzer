@@ -18,9 +18,16 @@ export const browserController = async (req: Request, res: Response) => {
         title: result.title,
         student: result.data?.student,
         grades: result.data?.grades,
+        wrong_input: result.dialogMessage || null,
+
         percentage: result.percentage,
         total_subject: result.length,
-        wrong_input: result.dialogMessage || null
+
+        raw_total: {
+          totalTheoryMarks: result.raw_sums?.total_theory_marks,
+          totalAssignmentMarks: result.raw_sums?.total_assignment_marks,
+          totalPracticalMarks: result.raw_sums?.total_practical_marks,
+        },
       });
     } else {
       return res.status(404).json({ message: result.message });
