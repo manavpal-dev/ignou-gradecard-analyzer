@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Gradecard } from '../../services/gradecard'; 
+import { Gradecard } from '../../services/gradecard';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 })
 export class Form {
   form: FormGroup;
-  
+
   // Signals for reactive state management
   errorMessage = signal<string | null>(null);
   isLoading = signal(false);
@@ -21,7 +21,7 @@ export class Form {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private gradeService: Gradecard 
+    private gradeService: Gradecard,
   ) {
     this.form = this.fb.group({
       program: ['', Validators.required],
@@ -29,7 +29,7 @@ export class Form {
         '',
         [
           Validators.required,
-          Validators.minLength(10),
+          Validators.minLength(9),
           Validators.maxLength(10),
           Validators.pattern('^[0-9]+$'),
         ],
@@ -46,29 +46,29 @@ export class Form {
     if (this.form.invalid) return;
 
     this.isLoading.set(true);
-    this.errorMessage.set(null); 
+    this.errorMessage.set(null);
 
     const { program, enrollment } = this.form.value;
 
     this.gradeService.fetchGradeCard(program, enrollment).subscribe({
       next: (res) => {
         this.isLoading.set(false);
-        
+
         // Check if the scraper caught an IGNOU alert (Wrong Enrollment/Program)
         if (res.wrong_input) {
           this.errorMessage.set(res.wrong_input);
         } else {
           // Success: Navigate to result page and pass data via state to avoid double-fetching
-          this.router.navigate(['/result'], { 
+          this.router.navigate(['/result'], {
             state: { gradeData: res },
-            queryParams: { program, enrollment } // Keep params for refresh support
+            queryParams: { program, enrollment }, // Keep params for refresh support
           });
         }
       },
       error: (err) => {
         this.isLoading.set(false);
-        this.errorMessage.set(err.error?.message || "Server connection failed.");
-      }
+        this.errorMessage.set(err.error?.message || 'Server connection failed.');
+      },
     });
   }
 }
