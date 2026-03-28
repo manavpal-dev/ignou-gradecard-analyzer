@@ -1,4 +1,5 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:5000' // Your local backend
+  apiUrl: 'http://localhost:5000', // Your local backend
+  key: 'secret@2300',
 };

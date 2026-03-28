@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { browserService } from "../services/browser.service";
+import { getCache, setCache } from "../utils/cache";
 
 export const browserController = async (req: Request, res: Response) => {
   try {
@@ -10,10 +11,20 @@ export const browserController = async (req: Request, res: Response) => {
         .status(400)
         .json({ message: "Program and Enrollment required" });
     }
+
+    const cacheKey = `${program.trim().toUpperCase()}-${enrollment.trim()}`;
+
+    const cached = getCache(cacheKey);
+    if (cached) {
+      return res.status(200).json(cached);
+    }
+
+    console.log(`Fetching: ${cacheKey}`);
+
     const result = await browserService(program, enrollment);
 
     if (result.success) {
-      return res.status(200).json({
+      const responseData = {
         message: "Grade Card fetched successfully",
         title: result.title,
         student: result.data?.student,
@@ -31,7 +42,11 @@ export const browserController = async (req: Request, res: Response) => {
           totalAssignmentMarks: result.raw_sums?.total_assignment_marks,
           totalPracticalMarks: result.raw_sums?.total_practical_marks,
         },
-      });
+      };
+
+      setCache(cacheKey, responseData);
+
+      return res.status(200).json(responseData);
     } else {
       return res.status(404).json({ message: result.message });
     }

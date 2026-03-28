@@ -12,7 +12,7 @@ export const browserService = async (program: string, enrollment: string) => {
     await dialog.accept();
   });
 
-  await page.setCacheEnabled(false);
+  // await page.setCacheEnabled(false);
 
   await page.setExtraHTTPHeaders({
     "User-Agent":
@@ -45,6 +45,7 @@ export const browserService = async (program: string, enrollment: string) => {
   try {
     await page.goto("https://gradecard.ignou.ac.in/gradecard/login.aspx", {
       waitUntil: "domcontentloaded", // networkidle2 --> Wait until network is quiet
+      timeout:20000,
     });
 
     // await page.reload({ waitUntil: "domcontentloaded" });

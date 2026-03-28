@@ -11,6 +11,6 @@ export class Gradecard {
   constructor(private http:HttpClient){}
 
   fetchGradeCard(program:string, enrollment:string){
-   return this.http.post<GradeCardResponse>(`${environment.apiUrl}/api/test-browser`,{program,enrollment})
+   return this.http.post<GradeCardResponse>(`${environment.apiUrl}/api/test-browser`,{program,enrollment},{headers:{"x-api-key":environment.key}})
   }
 }
