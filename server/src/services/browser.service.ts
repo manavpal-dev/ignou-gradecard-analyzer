@@ -45,7 +45,7 @@ export const browserService = async (program: string, enrollment: string) => {
   try {
     await page.goto("https://gradecard.ignou.ac.in/gradecard/login.aspx", {
       waitUntil: "domcontentloaded", // networkidle2 --> Wait until network is quiet
-      timeout:20000,
+      timeout: 20000,
     });
 
     // await page.reload({ waitUntil: "domcontentloaded" });
@@ -75,20 +75,20 @@ export const browserService = async (program: string, enrollment: string) => {
 
     /* ---------- STEP 3: SET ENROLLMENT VALUE (DOM SAFE) ---------- */
 
-    await page.evaluate((val) => {
-      const input = document.querySelector(
-        "#txtEnrno",
-      ) as HTMLInputElement | null;
-      if (!input) return;
+    await page.waitForSelector("#txtEnrno");
 
-      input.scrollIntoView({ block: "center" });
-      input.focus();
-      input.value = val;
+    await page.click("#txtEnrno");
 
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-      input.dispatchEvent(new Event("change", { bubbles: true }));
-      input.dispatchEvent(new Event("blur", { bubbles: true }));
-    }, enrollment);
+    // Clear existing value (important)
+    await page.keyboard.down("Control");
+    await page.keyboard.press("A");
+    await page.keyboard.up("Control");
+    await page.keyboard.press("Backspace");
+
+    // Type like human
+    await page.type("#txtEnrno", enrollment, {
+      delay: 100, // 👈 this is your delay (ms per character)
+    });
 
     /* ---------- STEP 4: SUBMIT FORM ---------- */
     await page.waitForSelector("#btnlogin", { visible: true });
@@ -233,7 +233,7 @@ export const browserService = async (program: string, enrollment: string) => {
         percentage: Number(percentage.toFixed(2)), // Clean decimal
         length: result.grades.length,
         statusComplete,
-        statusIncomplete
+        statusIncomplete,
       },
       raw_sums: {
         total_assignment_marks: Number(sum_assignment.toFixed(2)),
