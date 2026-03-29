@@ -4,7 +4,7 @@ type CacheData = {
 };
 
 const cache = new Map<string, CacheData>();
-const CACHE_DURATION = 1 * 60 * 60 * 1000; // 1 hours
+const CACHE_DURATION = 10 * 60 * 1000; // 10 min
 
 export const getCache = (key: string) => {
   const data = cache.get(key);

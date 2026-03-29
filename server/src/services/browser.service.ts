@@ -73,28 +73,73 @@ export const browserService = async (program: string, enrollment: string) => {
       return input instanceof HTMLInputElement && !input.disabled;
     });
 
-    /* ---------- STEP 3: SET ENROLLMENT VALUE (DOM SAFE) ---------- */
+    /* ---------- STEP 3: SET ENROLLMENT VALUE SAFELY ---------- */
 
-    await page.waitForSelector("#txtEnrno");
+    await page.waitForSelector("#txtEnrno", { visible: true });
 
-    await page.click("#txtEnrno");
+    let success = false;
 
-    // Clear existing value (important)
-    await page.keyboard.down("Control");
-    await page.keyboard.press("A");
-    await page.keyboard.up("Control");
-    await page.keyboard.press("Backspace");
+    for (let i = 0; i < 3; i++) {
+      await page.evaluate((val) => {
+        const input = document.querySelector(
+          "#txtEnrno",
+        ) as HTMLInputElement | null;
+        if (!input) return;
 
-    // Type like human
-    await page.type("#txtEnrno", enrollment, {
-      delay: 100, // 👈 this is your delay (ms per character)
-    });
+        input.focus();
+
+        // clear
+        input.value = "";
+
+        // simulate typing character by character
+        for (let i = 0; i < val.length; i++) {
+          input.value += val[i];
+
+          input.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true }));
+          input.dispatchEvent(new KeyboardEvent("keypress", { bubbles: true }));
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+          input.dispatchEvent(new KeyboardEvent("keyup", { bubbles: true }));
+        }
+
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+        input.dispatchEvent(new Event("blur", { bubbles: true }));
+      }, enrollment);
+
+      // wait a bit for JS to process
+      await new Promise((r) => setTimeout(r, 400));
+
+      const value = await page.$eval(
+        "#txtEnrno",
+        (el) => (el as HTMLInputElement).value,
+      );
+
+      if (value === enrollment) {
+        success = true;
+        break;
+      }
+    }
+
+    if (!success) {
+      throw new Error("Failed to input enrollment after multiple attempts");
+    }
+
+    // ✅ final safety check
+    const finalValue = await page.$eval(
+      "#txtEnrno",
+      (el) => (el as HTMLInputElement).value,
+    );
+
+    if (finalValue !== enrollment) {
+      throw new Error("Enrollment not entered correctly");
+    }
+
+    // small delay (IGNOU JS needs this)
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
     /* ---------- STEP 4: SUBMIT FORM ---------- */
+
     await page.waitForSelector("#btnlogin", { visible: true });
 
-    // We click the button and then race to see what happens first:
-    // a result table or a dialog message.
     await page.click("#btnlogin");
 
     try {

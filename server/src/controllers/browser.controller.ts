@@ -19,7 +19,7 @@ export const browserController = async (req: Request, res: Response) => {
       return res.status(200).json(cached);
     }
 
-    console.log(`Fetching: ${cacheKey}`);
+    // console.log(`Fetching: ${cacheKey}`);
 
     const result = await browserService(program, enrollment);
 
