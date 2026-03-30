@@ -3,6 +3,7 @@ import { FormGroup, ReactiveFormsModule, FormBuilder, Validators } from '@angula
 import { Router } from '@angular/router';
 import { Gradecard } from '../../services/gradecard';
 import { CommonModule } from '@angular/common';
+import { Meta, Title } from '@angular/platform-browser';
 
 declare let gtag: Function;
 @Component({
@@ -24,6 +25,8 @@ export class Form {
     private fb: FormBuilder,
     private router: Router,
     private gradeService: Gradecard,
+    private meta: Meta,
+    private title: Title
   ) {
     this.form = this.fb.group({
       program: ['', Validators.required],
@@ -43,6 +46,15 @@ export class Form {
       if (this.errorMessage()) this.errorMessage.set(null);
     });
   }
+
+  ngOnInit() {
+  this.title.setTitle('IGNOU Grade Card Checker - BCA/MCA Results');
+
+  this.meta.updateTag({
+    name: 'description',
+    content: 'Check IGNOU BCA and MCA grade card instantly with our fast and free tool.'
+  });
+}
 
   onSubmit() {
     if (this.form.invalid) return;
