@@ -6,6 +6,7 @@ const app = express();
 
 const allowedOrigin = [
   "http://localhost:4200",
+  "http://localhost:3000",
   "https://ignou-gradecard-analyzer.vercel.app"
 ]
 //Middleware

@@ -48,7 +48,7 @@ export const browserController = async (req: Request, res: Response) => {
 
       return res.status(200).json(responseData);
     } else {
-      return res.status(404).json({ message: result.message });
+      return res.status(404).json({ message: result.message, wrong_input:result.message });
     }
   } catch (error) {
     console.error("Controller Error:", error);
