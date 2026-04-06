@@ -5,136 +5,146 @@ import { useRouter } from "next/navigation";
 
 export default function AnalyzerPage() {
 
-    const router = useRouter();
+  const router = useRouter();
 
-    const [program, setProgram] = useState("");
-    const [enrollment, setEnrollment] = useState("");
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
+  const [program, setProgram] = useState("");
+  const [enrollment, setEnrollment] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-    const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-        setLoading(true);
-        setError(null);
+    setLoading(true);
+    setError(null);
 
-        try {
-            const response = await fetch("http://localhost:5000/api/test-browser", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-api-key": "secret@2300",
-                },
-                body: JSON.stringify({ program, enrollment }),
-            });
+    try {
+      const response = await fetch("http://localhost:5000/api/test-browser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": "secret@2300",
+        },
+        body: JSON.stringify({ program, enrollment }),
+      });
 
-            const data = await response.json();
+      const data = await response.json();
 
-            setLoading(false);
+      setLoading(false);
 
-            // 🔥 FIXED VALIDATION
-            if (data?.wrong_input || !data.student) {
-                setError(data?.wrong_input || "Invalid Enrollment or Program");
-                return;
-            }
+      if (data?.wrong_input || !data.student) {
+        setError(data?.wrong_input || "Invalid Enrollment or Program");
+        return;
+      }
 
-            sessionStorage.setItem("gradeData", JSON.stringify({
-                data,
-                timestamp: Date.now()
-            }));
+      sessionStorage.setItem("gradeData", JSON.stringify({
+        data,
+        timestamp: Date.now()
+      }));
 
-            router.push(`/result/${enrollment}?program=${program}`);
+      router.push(`/result/${enrollment}?program=${program}`);
 
-        } catch {
-            setLoading(false);
-            setError("Server Connection Failed.");
-        }
+    } catch {
+      setLoading(false);
+      setError("Server Connection Failed.");
+    }
+  };
 
-    };
-
-    return (
-        <div className="min-h-screen flex items-center justify-center px-4 
+  return (
+    <div className="h-[90vh] flex flex-col items-center justify-center px-4 
     bg-gradient-to-br from-indigo-100 via-white to-purple-100">
 
-            <div className="w-full max-w-md p-8 rounded-2xl 
+      {/* SEO Heading (hidden visually but useful) */}
+      <h1 className="sr-only">
+        IGNOU Grade Card Checker – Check Result and Percentage
+      </h1>
+
+      <div className="w-full max-w-md p-8 py-12 rounded-2xl 
       bg-white/80 backdrop-blur-md shadow-xl border border-gray-200">
 
-                {/* Logo / Title */}
-                <h2 className="text-center text-2xl font-bold text-gray-900 mb-1">
-                    IGNOU Grade Card Checker
-                </h2>
+        {/* Title */}
+        <h2 className="text-center text-2xl font-bold text-gray-900 mb-1">
+          Check IGNOU Grade Card
+        </h2>
 
-                <p className="text-center text-sm text-gray-500 mb-6">
-                    Check your academic performance instantly
-                </p>
+        <p className="text-center text-sm text-gray-500 mb-6">
+          Enter your enrollment number to check result, status and percentage
+        </p>
 
-                {/* Error */}
-                {error && (
-                    <div className="bg-red-100 border border-red-300 text-red-600 
+        {/* Error */}
+        {error && (
+          <div className="bg-red-100 border border-red-300 text-red-600 
           p-3 rounded-md mb-5 text-sm flex items-center gap-2 animate-pulse">
-                        ⚠️ {error}
-                    </div>
-                )}
+            ⚠️ {error}
+          </div>
+        )}
 
-                {/* Form */}
-                <form onSubmit={onSubmitHandler} className="flex flex-col gap-5">
+        {/* Form */}
+        <form onSubmit={onSubmitHandler} className="flex flex-col gap-5">
 
-                    {/* Program */}
-                    <div>
-                        <label className="text-sm font-medium text-gray-700 mb-1 block">
-                            Program
-                        </label>
+          {/* Program */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">
+              Select Program
+            </label>
 
-                        <select
-                            required
-                            value={program}
-                            onChange={(e) => setProgram(e.target.value)}
-                            className="w-full h-11 px-3 rounded-lg border bg-gray-50 text-gray-900 text-sm 
-              focus:outline-none focus:ring-2 focus:ring-indigo-400 
-              hover:border-indigo-300 transition"
-                        >
-                            <option value="">Select Program</option>
-                            <option value="BCA">BCA</option>
-                            <option value="BCAOL">BCAOL</option>
-                            <option value="BCA_NEW">BCA_NEW</option>
-                            <option value="BCA_NEWOL">BCA_NEWOL</option>
-                        </select>
-                    </div>
+            <select
+              required
+              value={program}
+              onChange={(e) => setProgram(e.target.value)}
+              className="w-full h-11 px-3 rounded-lg border bg-gray-50 text-gray-900 text-sm 
+              focus:outline-none focus:ring-2 focus:ring-indigo-500 
+              hover:border-indigo-400 transition"
+            >
+              <option value="">Choose your program</option>
+              <option value="BCA">BCA</option>
+              <option value="BCAOL">BCAOL</option>
+              <option value="BCA_NEW">BCA_NEW</option>
+              <option value="BCA_NEWOL">BCA_NEWOL</option>
+            </select>
+          </div>
 
-                    {/* Enrollment */}
-                    <div>
-                        <label className="text-sm font-medium text-gray-700 mb-1 block">
-                            Enrollment Number
-                        </label>
+          {/* Enrollment */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">
+              Enrollment Number
+            </label>
 
-                        <input
-                            type="text"
-                            required
-                            placeholder="Enter 9–10 digit number"
-                            value={enrollment}
-                            onChange={(e) => setEnrollment(e.target.value)}
-                            className="w-full h-11 px-3 rounded-lg border bg-gray-50 text-gray-900 text-sm 
-              focus:outline-none focus:ring-2 focus:ring-indigo-400 
-              hover:border-indigo-300 transition"
-                        />
-                    </div>
+            <input
+              type="text"
+              required
+              placeholder="Enter 9–10 digit enrollment number"
+              value={enrollment}
+              onChange={(e) => setEnrollment(e.target.value)}
+              className="w-full h-11 px-3 rounded-lg border bg-gray-50 text-gray-900 text-sm 
+              focus:outline-none focus:ring-2 focus:ring-indigo-500 
+              hover:border-indigo-400 transition"
+            />
+          </div>
 
-                    {/* Button */}
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className={`h-12 rounded-lg text-white font-semibold transition-all duration-200
+          {/* Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className={`h-12 rounded-lg text-white font-semibold transition-all duration-200
             ${loading
-                                ? "bg-indigo-300 cursor-not-allowed"
-                                : "bg-gradient-to-r from-indigo-500 to-purple-600 hover:scale-[1.02] hover:shadow-lg"
-                            }`}
-                    >
-                        {loading ? "Verifying..." : "Check Grade Card"}
-                    </button>
+                ? "bg-indigo-300 cursor-not-allowed"
+                : "bg-gradient-to-r from-indigo-500 to-purple-600 hover:scale-[1.02] hover:shadow-lg"
+              }`}
+          >
+            {loading ? "Checking..." : "Check Grade Card"}
+          </button>
 
-                </form>
+        </form>
 
-            </div>
-        </div>
-    );
+        {/* Extra info (SEO + UX) */}
+        <p className="text-xs text-gray-400 mt-6 text-center">
+          This tool helps IGNOU students check their grade card, result status,
+          and calculate percentage instantly.
+        </p>
+
+      </div>
+
+    </div>
+  );
 }

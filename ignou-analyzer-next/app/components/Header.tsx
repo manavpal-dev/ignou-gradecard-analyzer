@@ -3,13 +3,25 @@
 import Image from "next/image";
 import Link from "next/link";
 
+export const metadata = {
+  title: "IGNOU Grade Card Checker – Check Result & Percentage",
+  description:
+    "Check your IGNOU grade card, result status, and percentage instantly. Supports BCA, MCA and other programs.",
+  keywords: [
+    "IGNOU grade card check",
+    "IGNOU result checker",
+    "IGNOU percentage calculator",
+    "IGNOU result status"
+  ],
+};
+
 export default function Header() {
   return (
     <header className="w-full border-b bg-white shadow-sm sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div className="max-w-6xl mx-auto px-2 py-3 flex justify-between items-center">
 
         {/* Brand */}
-        <Link href="/" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-4">
           <Image 
             src="/IGNOU.png"
             alt="IGNOU Logo"
@@ -20,7 +32,7 @@ export default function Header() {
           />
 
           <h1 className="font-bold text-lg text-indigo-600">
-            IGNOU Grade Card Analyzer
+          IGNOU Grade Card Checker
           </h1>
         </Link>
 
