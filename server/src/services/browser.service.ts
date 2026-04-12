@@ -209,7 +209,7 @@ export const browserService = async (program: string, enrollment: string) => {
         "#ctl00_ContentPlaceHolder1_gvDetail tr",
       );
 
-      for (let i = 1; i < rows.length - 1; i++) {
+      for (let i = 0; i < rows.length; i++) {
         const cells = rows[i].querySelectorAll("td");
         if (cells.length < 9) continue;
 
