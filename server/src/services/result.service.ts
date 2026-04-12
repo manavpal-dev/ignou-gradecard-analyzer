@@ -1,6 +1,10 @@
 import { getBrowser } from "./browserManager";
 
-export const browserService = async (program: string, enrollment: string) => {
+export const browserService = async (
+  program: string,
+  enrollment: string,
+  categoryType: string,
+) => {
   const browser = getBrowser();
   const page = await browser.newPage();
 
@@ -55,7 +59,22 @@ export const browserService = async (program: string, enrollment: string) => {
     /* ---------- STEP 1: SELECT GRADE TYPE ---------- */
 
     await page.waitForSelector("#ddlGradecardfor");
-    await page.select("#ddlGradecardfor", "1");
+
+    const programFirstOption = await page.evaluate(() => {
+      const optionsFirst = document.querySelectorAll("#ddlGradecardfor option");
+
+      const programOption: any[] = [];
+
+      optionsFirst.forEach((val, indx) => {
+        const value = val.getAttribute("value");
+        const label = val.textContent?.trim();
+
+        programOption.push({ value, label });
+      });
+      return programOption;
+    });
+
+    await page.select("#ddlGradecardfor", categoryType);
 
     await page.waitForFunction(() => {
       const ddl = document.querySelector(
@@ -71,6 +90,20 @@ export const browserService = async (program: string, enrollment: string) => {
     await page.waitForFunction(() => {
       const input = document.querySelector("#txtEnrno");
       return input instanceof HTMLInputElement && !input.disabled;
+    });
+
+    const programSecondOption = await page.evaluate(() => {
+      const optionSecond = document.querySelectorAll("#ddlProgram option");
+
+      const secondProgramOption: any[] = [];
+
+      secondProgramOption.forEach((val, indx) => {
+        const value = val.getAttribute("value");
+        const label = val.textContent?.trim();
+
+        secondProgramOption.push({ value, label });
+      });
+      return optionSecond;
     });
 
     /* ---------- STEP 3: SET ENROLLMENT VALUE SAFELY ---------- */
@@ -271,6 +304,8 @@ export const browserService = async (program: string, enrollment: string) => {
     return {
       success: true,
       title,
+      firstProgram: programFirstOption,
+      secondProgram: programSecondOption,
       data: result,
       dialogMessage,
 

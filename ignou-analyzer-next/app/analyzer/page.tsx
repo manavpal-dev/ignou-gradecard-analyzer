@@ -9,6 +9,7 @@ export default function AnalyzerPage() {
 
   const [program, setProgram] = useState("");
   const [enrollment, setEnrollment] = useState("");
+  const [programOption, setprogramOption] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +26,7 @@ export default function AnalyzerPage() {
           "Content-Type": "application/json",
           "x-api-key": "secret@2300",
         },
-        body: JSON.stringify({ program, enrollment }),
+        body: JSON.stringify({ program, enrollment, programOption }),
       });
 
       const data = await response.json();

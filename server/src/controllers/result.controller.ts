@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { browserService } from "../services/browser.service";
+import { browserService } from "../services/result.service";
 import { getCache, setCache } from "../utils/cache";
 
 export const browserController = async (req: Request, res: Response) => {
   try {
-    const { program, enrollment } = req.body;
+    const { program, enrollment,categoryType } = req.body;
 
     if (!program || !enrollment) {
       return res
@@ -21,7 +21,7 @@ export const browserController = async (req: Request, res: Response) => {
 
     // console.log(`Fetching: ${cacheKey}`);
 
-    const result = await browserService(program, enrollment);
+    const result = await browserService(program, enrollment,categoryType );
 
     if (result.success) {
       const responseData = {
@@ -48,7 +48,9 @@ export const browserController = async (req: Request, res: Response) => {
 
       return res.status(200).json(responseData);
     } else {
-      return res.status(404).json({ message: result.message, wrong_input:result.message });
+      return res
+        .status(404)
+        .json({ message: result.message, wrong_input: result.message });
     }
   } catch (error) {
     console.error("Controller Error:", error);

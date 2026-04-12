@@ -1,5 +1,5 @@
 import express from "express";
-import { browserController } from "../controllers/browser.controller";
+import { browserController } from "../controllers/result.controller";
 import { apiKeyMiddleware } from "../middlewares/apikey.middleware";
 import { limiter } from "../middlewares/rateLimit.middleware";
 
