@@ -1,12 +1,11 @@
-import { getBrowser } from "./browserManager";
+import { createPage } from "../utils/puppeteerSetup";
 
-export const browserService = async (
-  program: string,
-  enrollment: string,
+export const resultService = async (
   categoryType: string,
+  program: string,
+  enrollment: string
 ) => {
-  const browser = getBrowser();
-  const page = await browser.newPage();
+  const page = await createPage();
 
   /* ---------- HANDLE ALERT ---------- */
   let dialogMessage: string | null = null;
@@ -16,43 +15,11 @@ export const browserService = async (
     await dialog.accept();
   });
 
-  // await page.setCacheEnabled(false);
-
-  await page.setExtraHTTPHeaders({
-    "User-Agent":
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
-  });
-
-  /* ---------- HEADLESS BYPASS ---------- */
-  await page.evaluateOnNewDocument(() => {
-    Object.defineProperty(navigator, "webdriver", { get: () => false });
-  });
-
-  //blocking unnecessary request
-  await page.setRequestInterception(true);
-
-  page.on("request", (request) => {
-    const resourceType = request.resourceType();
-
-    if (
-      resourceType === "image" ||
-      resourceType === "font" ||
-      resourceType === "media" ||
-      resourceType === "stylesheet"
-    ) {
-      request.abort();
-    } else {
-      request.continue();
-    }
-  });
-
   try {
     await page.goto("https://gradecard.ignou.ac.in/gradecard/login.aspx", {
       waitUntil: "domcontentloaded", // networkidle2 --> Wait until network is quiet
       timeout: 20000,
     });
-
-    // await page.reload({ waitUntil: "domcontentloaded" });
 
     const title = await page.title();
 
@@ -60,19 +27,19 @@ export const browserService = async (
 
     await page.waitForSelector("#ddlGradecardfor");
 
-    const programFirstOption = await page.evaluate(() => {
-      const optionsFirst = document.querySelectorAll("#ddlGradecardfor option");
+    // const programFirstOption = await page.evaluate(() => {
+    //   const optionsFirst = document.querySelectorAll("#ddlGradecardfor option");
 
-      const programOption: any[] = [];
+    //   const programOption: any[] = [];
 
-      optionsFirst.forEach((val, indx) => {
-        const value = val.getAttribute("value");
-        const label = val.textContent?.trim();
+    //   optionsFirst.forEach((val, indx) => {
+    //     const value = val.getAttribute("value");
+    //     const label = val.textContent?.trim();
 
-        programOption.push({ value, label });
-      });
-      return programOption;
-    });
+    //     programOption.push({ value, label });
+    //   });
+    //   return programOption;
+    // });
 
     await page.select("#ddlGradecardfor", categoryType);
 
@@ -92,19 +59,19 @@ export const browserService = async (
       return input instanceof HTMLInputElement && !input.disabled;
     });
 
-    const programSecondOption = await page.evaluate(() => {
-      const optionSecond = document.querySelectorAll("#ddlProgram option");
+    // const programSecondOption = await page.evaluate(() => {
+    //   const optionSecond = document.querySelectorAll("#ddlProgram option");
 
-      const secondProgramOption: any[] = [];
+    //   const secondProgramOption: any[] = [];
 
-      secondProgramOption.forEach((val, indx) => {
-        const value = val.getAttribute("value");
-        const label = val.textContent?.trim();
+    //   secondProgramOption.forEach((val, indx) => {
+    //     const value = val.getAttribute("value");
+    //     const label = val.textContent?.trim();
 
-        secondProgramOption.push({ value, label });
-      });
-      return optionSecond;
-    });
+    //     secondProgramOption.push({ value, label });
+    //   });
+    //   return optionSecond;
+    // });
 
     /* ---------- STEP 3: SET ENROLLMENT VALUE SAFELY ---------- */
 
@@ -304,8 +271,6 @@ export const browserService = async (
     return {
       success: true,
       title,
-      firstProgram: programFirstOption,
-      secondProgram: programSecondOption,
       data: result,
       dialogMessage,
 
@@ -330,7 +295,7 @@ export const browserService = async (
 
     return {
       success: false,
-      message: "Scraping failed",
+      message: "Scraping failed for result page",
     };
   } finally {
     await page.close();
