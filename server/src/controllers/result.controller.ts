@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { browserService } from "../services/result.service";
+import { resultService } from "../services/result.service";
 import { getCache, setCache } from "../utils/cache";
 
 export const browserController = async (req: Request, res: Response) => {
@@ -21,7 +21,7 @@ export const browserController = async (req: Request, res: Response) => {
 
     // console.log(`Fetching: ${cacheKey}`);
 
-    const result = await browserService(program, enrollment,categoryType );
+    const result = await resultService(program, enrollment,categoryType );
 
     if (result.success) {
       const responseData = {

@@ -1,9 +1,9 @@
 import { createPage } from "../utils/puppeteerSetup";
 
 export const resultService = async (
-  categoryType: string,
   program: string,
-  enrollment: string
+  enrollment: string,
+  categoryType: string,
 ) => {
   const page = await createPage();
 
@@ -47,9 +47,14 @@ export const resultService = async (
       const ddl = document.querySelector(
         "#ddlProgram",
       ) as HTMLSelectElement | null;
-      return ddl && ddl.options.length > 5;
-    });
 
+      if (!ddl) return false;
+
+      // Check if at least one valid option exists (not default "0")
+      return Array.from(ddl.options).some(
+        (opt) => opt.value && opt.value !== "0",
+      );
+    });
     /* ---------- STEP 2: SELECT PROGRAM ---------- */
 
     await page.select("#ddlProgram", program.toUpperCase());
