@@ -17,7 +17,7 @@ export const categoryService = async () => {
         "#ddlGradecardfor option",
       );
 
-      const programArray: Array<{value:string|null, label:string|undefined}> = [];
+      const programArray: Array<{ value: string; label: string }> = [];
 
       optionSelector.forEach((val, indx) => {
         const value = (val as HTMLOptionElement).value;
@@ -28,7 +28,7 @@ export const categoryService = async () => {
       return programArray;
     });
     return {
-      success:true,
+      success: true,
       categoryOptions,
     };
   } catch (error) {

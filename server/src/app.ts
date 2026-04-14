@@ -1,11 +1,11 @@
 import express from "express";
 import cors from "cors";
 import healthRouter from "./routes/health.routes";
-import browserRouter from "./routes/browser.routes";
+import resultRouter from "./routes/result.routes";
+import categoriesRouter from "./routes/categories.routes";
 const app = express();
 
 const allowedOrigin = [
-  "http://localhost:4200",
   "http://localhost:3000",
   "https://ignou-gradecard-analyzer.vercel.app"
 ]
@@ -24,7 +24,7 @@ app.use(
 app.use(express.json());
 
 app.use("/api", healthRouter);
-
-app.use("/api", browserRouter);
+app.use("/api", categoriesRouter)
+app.use("/api", resultRouter);
 
 export default app;

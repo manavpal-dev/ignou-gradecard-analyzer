@@ -3,13 +3,13 @@ import { browserController } from "../controllers/result.controller";
 import { apiKeyMiddleware } from "../middlewares/apikey.middleware";
 import { limiter } from "../middlewares/rateLimit.middleware";
 
-const browserRouter = express.Router();
+const resultRouter = express.Router();
 
-browserRouter.post(
+resultRouter.post(
   "/test-browser",
   apiKeyMiddleware,
   limiter,
   browserController,
 );
 
-export default browserRouter;
+export default resultRouter;
