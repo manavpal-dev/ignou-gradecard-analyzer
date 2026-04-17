@@ -1,9 +1,9 @@
 import { createPage } from "../utils/puppeteerSetup";
 
 export const resultService = async (
+  categoryType: string,
   program: string,
   enrollment: string,
-  categoryType: string,
 ) => {
   const page = await createPage();
 
@@ -27,20 +27,6 @@ export const resultService = async (
 
     await page.waitForSelector("#ddlGradecardfor");
 
-    // const programFirstOption = await page.evaluate(() => {
-    //   const optionsFirst = document.querySelectorAll("#ddlGradecardfor option");
-
-    //   const programOption: any[] = [];
-
-    //   optionsFirst.forEach((val, indx) => {
-    //     const value = val.getAttribute("value");
-    //     const label = val.textContent?.trim();
-
-    //     programOption.push({ value, label });
-    //   });
-    //   return programOption;
-    // });
-
     await page.select("#ddlGradecardfor", categoryType);
 
     await page.waitForFunction(() => {
@@ -63,20 +49,6 @@ export const resultService = async (
       const input = document.querySelector("#txtEnrno");
       return input instanceof HTMLInputElement && !input.disabled;
     });
-
-    // const programSecondOption = await page.evaluate(() => {
-    //   const optionSecond = document.querySelectorAll("#ddlProgram option");
-
-    //   const secondProgramOption: any[] = [];
-
-    //   secondProgramOption.forEach((val, indx) => {
-    //     const value = val.getAttribute("value");
-    //     const label = val.textContent?.trim();
-
-    //     secondProgramOption.push({ value, label });
-    //   });
-    //   return optionSecond;
-    // });
 
     /* ---------- STEP 3: SET ENROLLMENT VALUE SAFELY ---------- */
 
@@ -214,7 +186,7 @@ export const resultService = async (
         "#ctl00_ContentPlaceHolder1_gvDetail tr",
       );
 
-      for (let i = 0; i < rows.length; i++) {
+      for (let i = 0; i < rows.length - 1; i++) {
         const cells = rows[i].querySelectorAll("td");
         if (cells.length < 9) continue;
 
@@ -222,6 +194,22 @@ export const resultService = async (
           Course: cells[0]?.textContent?.trim(),
           Assignment:
             cells[1]?.textContent?.trim() === "-"
+              ? null
+              : Number(cells[1]?.textContent),
+          Lab1:
+            cells[2]?.textContent?.trim() === "-"
+              ? null
+              : Number(cells[1]?.textContent),
+          Lab2:
+            cells[3]?.textContent?.trim() === "-"
+              ? null
+              : Number(cells[1]?.textContent),
+          Lab3:
+            cells[4]?.textContent?.trim() === "-"
+              ? null
+              : Number(cells[1]?.textContent),
+          Lab4:
+            cells[5]?.textContent?.trim() === "-"
               ? null
               : Number(cells[1]?.textContent),
           Theory:

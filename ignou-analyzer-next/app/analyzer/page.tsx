@@ -1,17 +1,68 @@
 'use client'
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+
+type Option = {
+  value: string;
+  label: string;
+};
 
 export default function AnalyzerPage() {
 
   const router = useRouter();
 
-  const [program, setProgram] = useState("");
   const [enrollment, setEnrollment] = useState("");
-  const [programOption, setprogramOption] = useState("");
+
+  const [categories, setCategories] = useState<Option[]>([]);
+  const [categoryType, setCategoryType] = useState("");
+
+  const [programs, setPrograms] = useState<Option[]>([]);
+  const [program, setProgram] = useState("");
+
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/categories", {
+        method: "GET"
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setCategories(data.categoryOptions);
+      }
+    } catch (error) {
+      setError("Failed to load categories");
+    }
+  }
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+  
+  const handleCategoryChange = async (value: string) => {
+    setCategoryType(value);
+    setPrograms([]);
+    setProgram("");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/program", {
+        method: "POST", headers: {
+          "Content-Type": "application/json"
+        }, body: JSON.stringify({ categoryType: value })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setPrograms(data.programOptions);
+      }
+    } catch (error) {
+      setError("Failed to load program");
+    }
+  }
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,7 +77,7 @@ export default function AnalyzerPage() {
           "Content-Type": "application/json",
           "x-api-key": "secret@2300",
         },
-        body: JSON.stringify({ program, enrollment, programOption }),
+        body: JSON.stringify({ categoryType, program, enrollment }),
       });
 
       const data = await response.json();
@@ -83,25 +134,53 @@ export default function AnalyzerPage() {
         {/* Form */}
         <form onSubmit={onSubmitHandler} className="flex flex-col gap-5">
 
-          {/* Program */}
+
+          {/* Select Category Type */}
           <div>
             <label className="text-sm font-medium text-gray-700 mb-1 block">
-              Select Program
+              Grade Card Status For
             </label>
 
             <select
               required
+              value={categoryType}
+              onChange={(e) => handleCategoryChange(e.target.value)}
+              className="w-full h-11 px-3 rounded-lg border bg-gray-50 text-gray-900 text-sm 
+              focus:outline-none focus:ring-2 focus:ring-indigo-500 
+              hover:border-indigo-400 transition"
+            ><option value="">Choose Category</option>
+
+              {
+                categories.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>))
+              }
+            </select>
+          </div>
+
+          {/* Program */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">
+              Select Program Code
+            </label>
+
+            <select
+              required
+              disabled={!categoryType}
               value={program}
               onChange={(e) => setProgram(e.target.value)}
               className="w-full h-11 px-3 rounded-lg border bg-gray-50 text-gray-900 text-sm 
               focus:outline-none focus:ring-2 focus:ring-indigo-500 
               hover:border-indigo-400 transition"
             >
-              <option value="">Choose your program</option>
-              <option value="BCA">BCA</option>
-              <option value="BCAOL">BCAOL</option>
-              <option value="BCA_NEW">BCA_NEW</option>
-              <option value="BCA_NEWOL">BCA_NEWOL</option>
+              <option value="">Choose Program</option>
+              {
+                programs.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>))
+              }
             </select>
           </div>
 

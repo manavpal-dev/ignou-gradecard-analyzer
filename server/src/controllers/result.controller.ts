@@ -4,7 +4,7 @@ import { getCache, setCache } from "../utils/cache";
 
 export const browserController = async (req: Request, res: Response) => {
   try {
-    const { program, enrollment,categoryType } = req.body;
+    const {categoryType, program, enrollment } = req.body;
 
     if (!program || !enrollment) {
       return res
@@ -21,7 +21,7 @@ export const browserController = async (req: Request, res: Response) => {
 
     // console.log(`Fetching: ${cacheKey}`);
 
-    const result = await resultService(program, enrollment,categoryType );
+    const result = await resultService(categoryType, program, enrollment );
 
     if (result.success) {
       const responseData = {

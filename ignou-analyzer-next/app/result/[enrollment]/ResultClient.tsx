@@ -195,6 +195,10 @@ export default function ResultPage() {
                                     <tr>
                                         <th className="p-3 text-left">Course</th>
                                         <th className="p-3 text-center">Assignment</th>
+                                        <th className="p-3 text-center">Lab1</th>
+                                        <th className="p-3 text-center">Lab2</th>
+                                        <th className="p-3 text-center">Lab3</th>
+                                        <th className="p-3 text-center">Lab4</th>
                                         <th className="p-3 text-center">Theory</th>
                                         <th className="p-3 text-center">Practical</th>
                                         <th className="p-3 text-center">Status</th>
@@ -210,6 +214,10 @@ export default function ResultPage() {
                                             </td>
 
                                             <td className="p-3 text-[#0f172a] text-center">{subject.Assignment ?? "-"}</td>
+                                            <td className="p-3 text-[#0f172a] text-center">{subject.Lab1 ?? "-"}</td>
+                                            <td className="p-3 text-[#0f172a] text-center">{subject.Lab2 ?? "-"}</td>
+                                            <td className="p-3 text-[#0f172a] text-center">{subject.Lab3 ?? "-"}</td>
+                                            <td className="p-3 text-[#0f172a] text-center">{subject.Lab4 ?? "-"}</td>
                                             <td className="p-3 text-[#0f172a] text-center">{subject.Theory ?? "-"}</td>
                                             <td className="p-3 text-[#0f172a] text-center">{subject.Practical ?? "-"}</td>
 
@@ -232,7 +240,10 @@ export default function ResultPage() {
                                         <td className="p-3 text-[#0f172a] text-left">Total Marks</td>
 
                                         <td className="p-3 text-[#0f172a] text-center">{data?.raw_total?.totalAssignmentMarks || 0}</td>
-
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                         <td className="p-3 text-[#0f172a] text-center">{data?.raw_total?.totalTheoryMarks}</td>
 
                                         <td className="p-3 text-[#0f172a] text-center">{data?.raw_total?.totalPracticalMarks}</td>
