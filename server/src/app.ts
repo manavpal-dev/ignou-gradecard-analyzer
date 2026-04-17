@@ -3,6 +3,7 @@ import cors from "cors";
 import healthRouter from "./routes/health.routes";
 import resultRouter from "./routes/result.routes";
 import categoriesRouter from "./routes/categories.routes";
+import programRouter from "./routes/programs.routes";
 const app = express();
 
 const allowedOrigin = [
@@ -24,7 +25,9 @@ app.use(
 app.use(express.json());
 
 app.use("/api", healthRouter);
-app.use("/api", categoriesRouter)
+
+app.use("/api", programRouter);
+app.use("/api", categoriesRouter);
 app.use("/api", resultRouter);
 
 export default app;
