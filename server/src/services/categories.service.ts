@@ -20,10 +20,12 @@ export const categoryService = async () => {
       const programArray: Array<{ value: string; label: string }> = [];
 
       optionSelector.forEach((val, indx) => {
-        const value = (val as HTMLOptionElement).value;
-        const label = val.textContent?.trim();
+        const value = (val as HTMLOptionElement).value.trim();
+        const label = val.textContent?.trim() || "";
 
-        programArray.push({ value, label });
+        if (value !== "0" && label.toLowerCase() !== "select") {
+          programArray.push({ value, label });
+        }
       });
       return programArray;
     });

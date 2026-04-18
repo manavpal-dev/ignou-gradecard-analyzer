@@ -6,20 +6,18 @@ export const browserController = async (req: Request, res: Response) => {
   try {
     const {categoryType, program, enrollment } = req.body;
 
-    if (!program || !enrollment) {
+    if (!categoryType || !program || !enrollment) {
       return res
         .status(400)
-        .json({ message: "Program and Enrollment required" });
+        .json({ message: "Category, Program and Enrollment required" });
     }
 
-    const cacheKey = `${program.trim().toUpperCase()}-${enrollment.trim()}`;
+    const cacheKey = `${categoryType}-${program.trim().toUpperCase()}-${enrollment.trim()}`;
 
     const cached = getCache(cacheKey);
     if (cached) {
       return res.status(200).json(cached);
     }
-
-    // console.log(`Fetching: ${cacheKey}`);
 
     const result = await resultService(categoryType, program, enrollment );
 

@@ -25,7 +25,7 @@ export const programService = async (categoryType: string) => {
         (opt) => opt.value && opt.value !== "0",
       );
     });
-    
+
     const programOptions = await page.evaluate(() => {
       const programOption = document.querySelectorAll("#ddlProgram option");
 
@@ -35,10 +35,12 @@ export const programService = async (categoryType: string) => {
       }> = [];
 
       programOption.forEach((val, indx) => {
-        const value = (val as HTMLOptionElement).value;
-        const label = val.textContent?.trim();
+        const value = (val as HTMLOptionElement).value.trim();
+        const label = val.textContent?.trim() || "";
 
-        programOptionArray.push({ value, label });
+        if (value !== "0" && label.toLowerCase() !== "select") {
+          programOptionArray.push({ value, label });
+        }
       });
       return programOptionArray;
     });

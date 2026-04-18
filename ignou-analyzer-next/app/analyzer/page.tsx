@@ -94,7 +94,7 @@ export default function AnalyzerPage() {
         timestamp: Date.now()
       }));
 
-      router.push(`/result/${enrollment}?program=${program}`);
+      router.push(`/result/${enrollment}?program=${program}&categoryType=${categoryType}`);
 
     } catch {
       setLoading(false);
@@ -151,8 +151,8 @@ export default function AnalyzerPage() {
             ><option value="">Choose Category</option>
 
               {
-                categories.map((item) => (
-                  <option key={item.value} value={item.value}>
+                categories.map((item,indx) => (
+                  <option key={`${item.value}-${indx}`} value={item.value}>
                     {item.label}
                   </option>))
               }
@@ -176,8 +176,8 @@ export default function AnalyzerPage() {
             >
               <option value="">Choose Program</option>
               {
-                programs.map((item) => (
-                  <option key={item.value} value={item.value}>
+                programs.map((item,indx) => (
+                  <option key={`${item.value}-${indx}`} value={item.value}>
                     {item.label}
                   </option>))
               }

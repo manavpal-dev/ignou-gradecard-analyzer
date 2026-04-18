@@ -8,6 +8,7 @@ export default function ResultPage() {
     const params = useParams();
     const searchParams = useSearchParams();
 
+    const categoryType = searchParams.get("categoryType");
     const enrollment = params.enrollment as string;
     const program = searchParams.get("program");
 
@@ -31,13 +32,13 @@ export default function ResultPage() {
 
     const fetchData = async () => {
         try {
-            const res = await fetch("http://localhost:5000/api/test-browser", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/test-browser`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "x-api-key": "secret@2300",
                 },
-                body: JSON.stringify({ program, enrollment }),
+                body: JSON.stringify({ program, enrollment, categoryType }),
             });
 
             const result = await res.json();
