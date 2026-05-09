@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { categoryService } from "../services/categories.service";
 import { getCache, setCache } from "../utils/cache";
 
+export const FOUR_MONTHS =
+  4 * 30 * 24 * 60 * 60 * 1000;
+
 export const categoriesController = async (req: Request, res: Response) => {
   try {
     const cacheKey = "categories-list";
@@ -9,16 +12,15 @@ export const categoriesController = async (req: Request, res: Response) => {
     const cached = getCache(cacheKey);
     if (cached) {
       return res.status(200).json({
-        success:true,
-        categoryOptions:cached
+        success: true,
+        categoryOptions: cached,
       });
     }
 
     const categories = await categoryService();
 
     if (categories.success) {
-      
-      setCache(cacheKey, categories.categoryOptions);
+      setCache(cacheKey, categories.categoryOptions, FOUR_MONTHS);
 
       return res
         .status(200)

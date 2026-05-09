@@ -1,6 +1,7 @@
 type CacheData = {
   value: any;
   timestamp: number;
+  duration: number;
 };
 
 const cache = new Map<string, CacheData>();
@@ -11,7 +12,7 @@ export const getCache = (key: string) => {
 
   if (!data) return null;
 
-  const isExpired = Date.now() - data.timestamp > CACHE_DURATION;
+  const isExpired = Date.now() - data.timestamp > data.duration;
 
   if (isExpired) {
     cache.delete(key);
@@ -21,9 +22,10 @@ export const getCache = (key: string) => {
   return data.value;
 };
 
-export const setCache = (key: string, value: any) => {
+export const setCache = (key: string, value: any, duration: number) => {
   cache.set(key, {
     value,
     timestamp: Date.now(),
+    duration,
   });
 };

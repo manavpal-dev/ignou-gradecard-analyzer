@@ -2,9 +2,11 @@ import { Request, Response } from "express";
 import { resultService } from "../services/result.service";
 import { getCache, setCache } from "../utils/cache";
 
+const TEN_MINUTES = 10 * 60 * 1000;
+
 export const browserController = async (req: Request, res: Response) => {
   try {
-    const {categoryType, program, enrollment } = req.body;
+    const { categoryType, program, enrollment } = req.body;
 
     if (!categoryType || !program || !enrollment) {
       return res
@@ -19,7 +21,7 @@ export const browserController = async (req: Request, res: Response) => {
       return res.status(200).json(cached);
     }
 
-    const result = await resultService(categoryType, program, enrollment );
+    const result = await resultService(categoryType, program, enrollment);
 
     if (result.success) {
       const responseData = {
@@ -41,8 +43,7 @@ export const browserController = async (req: Request, res: Response) => {
           totalPracticalMarks: result.raw_sums?.total_practical_marks,
         },
       };
-
-      setCache(cacheKey, responseData);
+      setCache(cacheKey, responseData,TEN_MINUTES);
 
       return res.status(200).json(responseData);
     } else {

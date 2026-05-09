@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { programService } from "../services/program.service";
 import { getCache, setCache } from "../utils/cache";
+import { FOUR_MONTHS } from "./categories.controller";
 
 export const programController = async (req: Request, res: Response) => {
   try {
@@ -29,7 +30,7 @@ export const programController = async (req: Request, res: Response) => {
 
     if (result.success) {
 
-      setCache(cacheKey, result.programOptions);
+      setCache(cacheKey, result.programOptions, FOUR_MONTHS);
 
       return res
         .status(200)

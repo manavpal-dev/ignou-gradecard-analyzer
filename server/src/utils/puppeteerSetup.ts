@@ -4,14 +4,6 @@ export const createPage = async () => {
   const browser = getBrowser();
   const page = await browser.newPage();
 
-//   /* ---------- HANDLE ALERT ---------- */
-//   let dialogMessage: string | null = null;
-//   page.on("dialog", async (dialog) => {
-//     dialogMessage = dialog.message();
-//     console.log("IGNOU Alert:", dialogMessage);
-//     await dialog.accept();
-//   });
-
   await page.setExtraHTTPHeaders({
     "User-Agent":
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
