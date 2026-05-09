@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,6 @@ type Option = {
 };
 
 export default function AnalyzerPage() {
-
   const router = useRouter();
 
   const [enrollment, setEnrollment] = useState("");
@@ -23,36 +22,42 @@ export default function AnalyzerPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
   const fetchCategories = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/categories", {
-        method: "GET"
+      const response = await fetch(`${API_URL}/api/categories`, {
+        method: "GET",
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         setCategories(data.categoryOptions);
       }
     } catch (error) {
       setError("Failed to load categories");
     }
-  }
+  };
   useEffect(() => {
-    fetchCategories();
+    const loadCategories = async () => {
+      await fetchCategories();
+    };
+    loadCategories();
   }, []);
-  
+
   const handleCategoryChange = async (value: string) => {
     setCategoryType(value);
     setPrograms([]);
     setProgram("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/program", {
-        method: "POST", headers: {
-          "Content-Type": "application/json"
-        }, body: JSON.stringify({ categoryType: value })
+      const response = await fetch(`${API_URL}/api/program`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ categoryType: value }),
       });
 
       const data = await response.json();
@@ -62,7 +67,7 @@ export default function AnalyzerPage() {
     } catch (error) {
       setError("Failed to load program");
     }
-  }
+  };
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -71,7 +76,7 @@ export default function AnalyzerPage() {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:5000/api/test-browser", {
+      const response = await fetch(`${API_URL}/api/test-browser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -89,13 +94,17 @@ export default function AnalyzerPage() {
         return;
       }
 
-      sessionStorage.setItem("gradeData", JSON.stringify({
-        data,
-        timestamp: Date.now()
-      }));
+      sessionStorage.setItem(
+        "gradeData",
+        JSON.stringify({
+          data,
+          timestamp: Date.now(),
+        }),
+      );
 
-      router.push(`/result/${enrollment}?program=${program}&categoryType=${categoryType}`);
-
+      router.push(
+        `/result/${enrollment}?program=${program}&categoryType=${categoryType}`,
+      );
     } catch {
       setLoading(false);
       setError("Server Connection Failed.");
@@ -103,17 +112,19 @@ export default function AnalyzerPage() {
   };
 
   return (
-    <div className="h-[90vh] flex flex-col items-center justify-center px-4 
-    bg-gradient-to-br from-indigo-100 via-white to-purple-100">
-
+    <div
+      className="h-[90vh] flex flex-col items-center justify-center px-4 
+    bg-gradient-to-br from-indigo-100 via-white to-purple-100"
+    >
       {/* SEO Heading (hidden visually but useful) */}
       <h1 className="sr-only">
         IGNOU Grade Card Checker – Check Result and Percentage
       </h1>
 
-      <div className="w-full max-w-md p-8 py-12 rounded-2xl 
-      bg-white/80 backdrop-blur-md shadow-xl border border-gray-200">
-
+      <div
+        className="w-full max-w-md p-8 py-12 rounded-2xl 
+      bg-white/80 backdrop-blur-md shadow-xl border border-gray-200"
+      >
         {/* Title */}
         <h2 className="text-center text-2xl font-bold text-gray-900 mb-1">
           Check IGNOU Grade Card
@@ -125,16 +136,16 @@ export default function AnalyzerPage() {
 
         {/* Error */}
         {error && (
-          <div className="bg-red-100 border border-red-300 text-red-600 
-          p-3 rounded-md mb-5 text-sm flex items-center gap-2 animate-pulse">
+          <div
+            className="bg-red-100 border border-red-300 text-red-600 
+          p-3 rounded-md mb-5 text-sm flex items-center gap-2 animate-pulse"
+          >
             ⚠️ {error}
           </div>
         )}
 
         {/* Form */}
         <form onSubmit={onSubmitHandler} className="flex flex-col gap-5">
-
-
           {/* Select Category Type */}
           <div>
             <label className="text-sm font-medium text-gray-700 mb-1 block">
@@ -148,14 +159,14 @@ export default function AnalyzerPage() {
               className="w-full h-11 px-3 rounded-lg border bg-gray-50 text-gray-900 text-sm 
               focus:outline-none focus:ring-2 focus:ring-indigo-500 
               hover:border-indigo-400 transition"
-            ><option value="">Choose Category</option>
+            >
+              <option value="">Choose Category</option>
 
-              {
-                categories.map((item,indx) => (
-                  <option key={`${item.value}-${indx}`} value={item.value}>
-                    {item.label}
-                  </option>))
-              }
+              {categories.map((item, indx) => (
+                <option key={`${item.value}-${indx}`} value={item.value}>
+                  {item.label}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -175,12 +186,11 @@ export default function AnalyzerPage() {
               hover:border-indigo-400 transition"
             >
               <option value="">Choose Program</option>
-              {
-                programs.map((item,indx) => (
-                  <option key={`${item.value}-${indx}`} value={item.value}>
-                    {item.label}
-                  </option>))
-              }
+              {programs.map((item, indx) => (
+                <option key={`${item.value}-${indx}`} value={item.value}>
+                  {item.label}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -207,14 +217,14 @@ export default function AnalyzerPage() {
             type="submit"
             disabled={loading}
             className={`h-12 rounded-lg text-white font-semibold transition-all duration-200
-            ${loading
+            ${
+              loading
                 ? "bg-indigo-300 cursor-not-allowed"
                 : "bg-gradient-to-r from-indigo-500 to-purple-600 hover:scale-[1.02] hover:shadow-lg"
-              }`}
+            }`}
           >
             {loading ? "Checking..." : "Check Grade Card"}
           </button>
-
         </form>
 
         {/* Extra info (SEO + UX) */}
@@ -222,9 +232,7 @@ export default function AnalyzerPage() {
           This tool helps IGNOU students check their grade card, result status,
           and calculate percentage instantly.
         </p>
-
       </div>
-
     </div>
   );
 }
