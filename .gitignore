@@ -6,8 +6,13 @@ dist/
 .angular/
 .angular/cache
 
+#Next.js build
+.next
+next-env.d.ts
+
 # Environment variables
 .env
+.env.local
 
 # Logs
 *.log
