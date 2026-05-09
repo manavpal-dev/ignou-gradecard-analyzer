@@ -6,21 +6,32 @@ import categoriesRouter from "./routes/categories.routes";
 import programRouter from "./routes/programs.routes";
 const app = express();
 
-const allowedOrigin = [
+const allowedOrigins = [
   "http://localhost:3000",
   "https://ignou-gradecard-analyzer.vercel.app"
 ]
 //Middleware
 app.use(
   cors({
-    origin: (origin,callback)=>{
-      if(!origin || allowedOrigin.includes(origin)){
-        callback(null,true);
-      }else{
-        callback(new Error("Not allowed by CORS"))
+    origin: (origin, callback) => {
+      // allow requests without origin
+      if (!origin) {
+        return callback(null, true);
       }
-    }
-  }),
+
+      // allow localhost + production
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // allow all vercel preview deployments
+      if (origin.includes("vercel.app")) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+  })
 ); // it helps to connect or make communication between the frontend and backend
 app.use(express.json());
 
