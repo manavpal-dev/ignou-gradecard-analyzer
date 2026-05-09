@@ -1,9 +1,7 @@
 import { Request, Response } from "express";
 import { categoryService } from "../services/categories.service";
 import { getCache, setCache } from "../utils/cache";
-
-export const FOUR_MONTHS =
-  4 * 30 * 24 * 60 * 60 * 1000;
+import { FOUR_MONTHS } from "../constants/cache.constants";
 
 export const categoriesController = async (req: Request, res: Response) => {
   try {

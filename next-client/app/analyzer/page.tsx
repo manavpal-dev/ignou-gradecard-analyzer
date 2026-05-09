@@ -22,11 +22,9 @@ export default function AnalyzerPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/categories`, {
+      const response = await fetch("/api/categories", {
         method: "GET",
       });
 
@@ -46,13 +44,13 @@ export default function AnalyzerPage() {
     loadCategories();
   }, []);
 
-  const handleCategoryChange = async (value: string) => {
+  const fetchPrograms = async (value: string) => {
     setCategoryType(value);
     setPrograms([]);
     setProgram("");
 
     try {
-      const response = await fetch(`${API_URL}/api/program`, {
+      const response = await fetch("/api/programs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,7 +62,7 @@ export default function AnalyzerPage() {
       if (data.success) {
         setPrograms(data.programOptions);
       }
-    } catch (error) {
+    } catch {
       setError("Failed to load program");
     }
   };
@@ -76,11 +74,10 @@ export default function AnalyzerPage() {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/api/test-browser`, {
+      const response = await fetch("/api/result", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": "secret@2300",
         },
         body: JSON.stringify({ categoryType, program, enrollment }),
       });
@@ -155,7 +152,7 @@ export default function AnalyzerPage() {
             <select
               required
               value={categoryType}
-              onChange={(e) => handleCategoryChange(e.target.value)}
+              onChange={(e) => fetchPrograms(e.target.value)}
               className="w-full h-11 px-3 rounded-lg border bg-gray-50 text-gray-900 text-sm 
               focus:outline-none focus:ring-2 focus:ring-indigo-500 
               hover:border-indigo-400 transition"

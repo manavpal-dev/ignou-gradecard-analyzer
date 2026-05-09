@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { resultService } from "../services/result.service";
 import { getCache, setCache } from "../utils/cache";
-
-const TEN_MINUTES = 10 * 60 * 1000;
+import { TEN_MINUTES } from "../constants/cache.constants";
 
 export const browserController = async (req: Request, res: Response) => {
   try {

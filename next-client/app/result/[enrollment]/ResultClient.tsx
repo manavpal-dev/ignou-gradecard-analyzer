@@ -31,17 +31,13 @@ export default function ResultPage() {
 
   const fetchData = async () => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/test-browser`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": "secret@2300",
-          },
-          body: JSON.stringify({ program, enrollment, categoryType }),
+      const res = await fetch("/api/result", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({ program, enrollment, categoryType }),
+      });
 
       const result = await res.json();
 
