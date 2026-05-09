@@ -1,3 +1,4 @@
+import { Grade } from "../types/grade.types";
 import { createPage } from "../utils/puppeteerSetup";
 
 export const resultService = async (
@@ -181,7 +182,7 @@ export const resultService = async (
           ?.textContent?.trim(),
       };
 
-      const grades: any[] = [];
+      const grades: Grade[] = [];
       const rows = document.querySelectorAll(
         "#ctl00_ContentPlaceHolder1_gvDetail tr",
       );
@@ -199,19 +200,19 @@ export const resultService = async (
           Lab1:
             cells[2]?.textContent?.trim() === "-"
               ? null
-              : Number(cells[1]?.textContent),
+              : Number(cells[2]?.textContent),
           Lab2:
             cells[3]?.textContent?.trim() === "-"
               ? null
-              : Number(cells[1]?.textContent),
+              : Number(cells[3]?.textContent),
           Lab3:
             cells[4]?.textContent?.trim() === "-"
               ? null
-              : Number(cells[1]?.textContent),
+              : Number(cells[4]?.textContent),
           Lab4:
             cells[5]?.textContent?.trim() === "-"
               ? null
-              : Number(cells[1]?.textContent),
+              : Number(cells[5]?.textContent),
           Theory:
             cells[6]?.textContent?.trim() === "-"
               ? null

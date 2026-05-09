@@ -22,6 +22,10 @@ export default function AnalyzerPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const isValidEnrollment = /^\d{9,10}$/.test(enrollment);
+
+  const isFormValid = categoryType && program && isValidEnrollment;
+
   const fetchCategories = async () => {
     try {
       const response = await fetch("/api/categories", {
@@ -38,10 +42,7 @@ export default function AnalyzerPage() {
     }
   };
   useEffect(() => {
-    const loadCategories = async () => {
-      await fetchCategories();
-    };
-    loadCategories();
+    fetchCategories();
   }, []);
 
   const fetchPrograms = async (value: string) => {
@@ -74,30 +75,30 @@ export default function AnalyzerPage() {
     setError(null);
 
     try {
-      const response = await fetch("/api/result", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ categoryType, program, enrollment }),
-      });
+      // const response = await fetch("/api/result", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({ categoryType, program, enrollment }),
+      // });
 
-      const data = await response.json();
+      // const data = await response.json();
 
-      setLoading(false);
+      // setLoading(false);
 
-      if (data?.wrong_input || !data.student) {
-        setError(data?.wrong_input || "Invalid Enrollment or Program");
-        return;
-      }
+      // if (data?.wrong_input || !data.student) {
+      //   setError(data?.wrong_input || "Invalid Enrollment or Program");
+      //   return;
+      // }
 
-      sessionStorage.setItem(
-        "gradeData",
-        JSON.stringify({
-          data,
-          timestamp: Date.now(),
-        }),
-      );
+      // sessionStorage.setItem(
+      //   "gradeData",
+      //   JSON.stringify({
+      //     data,
+      //     timestamp: Date.now(),
+      //   }),
+      // );
 
       router.push(
         `/result/${enrollment}?program=${program}&categoryType=${categoryType}`,
@@ -105,12 +106,14 @@ export default function AnalyzerPage() {
     } catch {
       setLoading(false);
       setError("Server Connection Failed.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div
-      className="h-[90vh] flex flex-col items-center justify-center px-4 
+      className="min-h-[85vh] flex flex-col items-center justify-center px-4 
     bg-gradient-to-br from-indigo-100 via-white to-purple-100"
     >
       {/* SEO Heading (hidden visually but useful) */}
@@ -159,8 +162,8 @@ export default function AnalyzerPage() {
             >
               <option value="">Choose Category</option>
 
-              {categories.map((item, indx) => (
-                <option key={`${item.value}-${indx}`} value={item.value}>
+              {categories.map((item) => (
+                <option key={item.value} value={item.value}>
                   {item.label}
                 </option>
               ))}
@@ -198,11 +201,14 @@ export default function AnalyzerPage() {
             </label>
 
             <input
+              maxLength={10}
+              minLength={9}
+              pattern="\d{9,10}"
               type="text"
               required
               placeholder="Enter 9–10 digit enrollment number"
               value={enrollment}
-              onChange={(e) => setEnrollment(e.target.value)}
+              onChange={(e) => setEnrollment(e.target.value.replace(/\D/g, ""))}
               className="w-full h-11 px-3 rounded-lg border bg-gray-50 text-gray-900 text-sm 
               focus:outline-none focus:ring-2 focus:ring-indigo-500 
               hover:border-indigo-400 transition"
@@ -212,12 +218,12 @@ export default function AnalyzerPage() {
           {/* Button */}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !isFormValid}
             className={`h-12 rounded-lg text-white font-semibold transition-all duration-200
             ${
-              loading
+              loading || !isFormValid
                 ? "bg-indigo-300 cursor-not-allowed"
-                : "bg-gradient-to-r from-indigo-500 to-purple-600 hover:scale-[1.02] hover:shadow-lg"
+                : "bg-linear-to-r from-indigo-500 to-purple-600 hover:scale-[1.02] hover:shadow-lg cursor-pointer"
             }`}
           >
             {loading ? "Checking..." : "Check Grade Card"}

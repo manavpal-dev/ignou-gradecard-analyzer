@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import {useRef} from "react";
 
 export default function ResultPage() {
   const params = useParams();
   const searchParams = useSearchParams();
-
+  
   const categoryType = searchParams.get("categoryType");
   const enrollment = params.enrollment as string;
   const program = searchParams.get("program");
@@ -14,7 +16,9 @@ export default function ResultPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  
+  const router = useRouter();
+  
   type ProgrmaType = "BCA" | "BCA_NEW" | "MCA";
 
   const totalProgramSubjects: Record<ProgrmaType, number> = {
@@ -22,6 +26,8 @@ export default function ResultPage() {
     BCA_NEW: 32,
     MCA: 22,
   };
+
+  const hasFetched = useRef(false);
 
   const totalSubjects =
     data?.student?.program &&
@@ -31,7 +37,7 @@ export default function ResultPage() {
 
   const fetchData = async () => {
     try {
-      const res = await fetch("/api/result", {
+      const response = await fetch("/api/result", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,13 +45,16 @@ export default function ResultPage() {
         body: JSON.stringify({ program, enrollment, categoryType }),
       });
 
-      const result = await res.json();
+      const result = await response.json();
 
-      if (result.wrong_input) {
-        setError(result.wrong_input);
-      } else {
-        setData(result);
+      if (!response.ok || result?.wrong_input) {
+        setError(
+          result.wrong_input || result.message || "Enrollment not found",
+        );
+        return;
       }
+
+      setData(result);
     } catch {
       setError("Failed to fetch data");
     } finally {
@@ -54,26 +63,35 @@ export default function ResultPage() {
   };
 
   useEffect(() => {
-    const stored = sessionStorage.getItem("gradeData");
-
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      const isFresh = Date.now() - parsed.timestamp < 10 * 60 * 1000; // 10 min
-      if (isFresh) {
-        setData(parsed.data);
-        setLoading(false);
-        return;
-      }
-    }
+    if(hasFetched.current) return;
+    hasFetched.current = true;
     fetchData();
   }, []);
 
   // 🔥 Loading UI
   if (loading) {
     return (
-      <div className="flex flex-col items-center mt-20">
-        <div className="w-10 h-10 border-4 border-gray-200 border-t-indigo-500 rounded-full animate-spin"></div>
-        <p className="mt-3 text-gray-500">Fetching Grade Card...</p>
+      <div className="flex-grow flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-4 py-16 min-h-[85vh]">
+
+        <div className="w-full max-w-md bg-white rounded-2xl border border-gray-100 shadow-lg p-8 text-center">
+          {/* Spinner */}
+          <div className="relative mx-auto w-16 h-16 mb-6">
+            <div className="absolute inset-0 rounded-full border-4 border-indigo-100"></div>
+
+            <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-indigo-500 animate-spin"></div>
+          </div>
+
+          {/* Title */}
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">
+            Fetching Grade Card
+          </h2>
+
+          {/* Description */}
+          <p className="text-gray-500 leading-relaxed">
+            Please wait while we securely fetch and analyze your IGNOU grade
+            card details.
+          </p>
+        </div>
       </div>
     );
   }
@@ -81,15 +99,32 @@ export default function ResultPage() {
   // ❌ Error UI
   if (error) {
     return (
-      <div className="bg-red-100 text-red-600 p-4 rounded-md max-w-md mx-auto mt-10">
-        ⚠️ {error}
+      <div className="flex-1 w-full flex flex-col items-center justify-center min-h-[85vh] bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-4 py-16">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl border p-8 text-center">
+          <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-red-100 flex items-center justify-center text-3xl">
+            ⚠️
+          </div>
+
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">
+            Enrollment Not Found
+          </h2>
+
+          <p className="text-gray-500 mb-6">{error}</p>
+
+          <button
+            onClick={() => router.push("/analyzer")}
+            className="w-full h-11 rounded-lg text-white font-semibold bg-linear-to-r  from-indigo-500 to-purple-600 hover:scale-[1.02] transition"
+          >
+            Back to Search
+          </button>
+        </div>
       </div>
     );
   }
 
   // ✅ Main UI
   return (
-    <div className="flex flex-col items-center px-4 py-10 bg-gradient-to-br from-indigo-50 via-white to-purple-50 min-h-screen">
+    <div className="flex-1 w-full flex flex-col items-center px-4 py-10 bg-gradient-to-br from-indigo-50 via-white to-purple-50">
       {/* Back */}
       <div
         onClick={() => window.history.back()}
@@ -130,7 +165,7 @@ export default function ResultPage() {
 
             <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all"
+                className="h-full bg-linear-to-r from-indigo-500 to-purple-500 transition-all"
                 style={{
                   width: `${(data?.subjectDetails?.total_subject / totalSubjects) * 100}%`,
                 }}

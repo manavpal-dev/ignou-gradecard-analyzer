@@ -56,7 +56,7 @@ export default function Header() {
           {/* CTA */}
           <Link href="/analyzer">
             <button className="px-4 py-2 rounded-lg text-white text-sm font-medium 
-            bg-gradient-to-r from-indigo-500 to-purple-600 
+            bg-linear-to-r from-indigo-500 to-purple-600 
             hover:scale-105 transition shadow">
               Check Now
             </button>

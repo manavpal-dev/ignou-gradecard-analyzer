@@ -16,30 +16,23 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "IGNOU Grade Card Check 2026 | Result, Status, Percentage Calculator",
-  description: "Check IGNOU grade card, result status and percentage instantly for BCA, MCA and other programs.",
-  icons:{
-    icon:{url:"/IGNOU.png", sizes: "32x32", type: "image/png"}
-  }
+  description:
+    "Check IGNOU grade card, result status and percentage instantly for BCA, MCA and other programs.",
+  icons: {
+    icon: { url: "/IGNOU.png", sizes: "32x32", type: "image/png" },
+  },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+// layout.tsx
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-screen flex flex-col bg-gray-50">
-
+    <html lang="en" className="h-full">
+      <body className="flex flex-col min-h-screen">
         <Header />
-        <main className="flex-1">
+        {/* flex-1 here is critical */}
+        <main className="flex-1 flex flex-col">
           {children}
-
         </main>
-
         <Footer />
       </body>
     </html>

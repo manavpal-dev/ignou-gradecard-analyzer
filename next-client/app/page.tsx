@@ -19,7 +19,7 @@ export default function HomePage() {
 
         <Link href="/analyzer">
           <button className="px-6 py-3 rounded-lg text-white font-semibold 
-          bg-gradient-to-r from-indigo-500 to-purple-600 
+          bg-linear-to-r from-indigo-500 to-purple-600 
           hover:scale-105 transition shadow-lg">
             Check Your Grade Card Now
           </button>
