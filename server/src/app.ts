@@ -9,7 +9,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
   "https://ignou-gradecard-analyzer.vercel.app"
-]
+];
 //Middleware
 app.use(
   cors({
@@ -34,6 +34,14 @@ app.use(
   })
 ); // it helps to connect or make communication between the frontend and backend
 app.use(express.json());
+
+app.get("/", (_req, res) => {
+  res.json({
+    success: true,
+    message: "IGNOU GradeCard API is running",
+    health: "/api/health",
+  });
+});
 
 app.use("/api", healthRouter);
 
