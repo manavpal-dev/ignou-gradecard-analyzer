@@ -24,11 +24,6 @@ app.use(
         return callback(null, true);
       }
 
-      // allow all vercel preview deployments
-      if (origin.includes("vercel.app")) {
-        return callback(null, true);
-      }
-
       return callback(new Error("Not allowed by CORS"));
     },
   })

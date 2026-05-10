@@ -60,12 +60,12 @@ export default function Header() {
               About
             </Link>
 
-            <Link
+            {/* <Link
               href="/analyzer"
               className="text-gray-600 hover:text-indigo-600 transition"
             >
               Analyzer
-            </Link>
+            </Link> */}
           </nav>
 
           {/* CTA */}
